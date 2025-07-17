@@ -1,37 +1,23 @@
-// src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import Dashboard from './components/Dashboard';
-import UserManagement from './pages/UserManagement';
-import HotelManagement from './pages/HotelManagement';
-import RestaurantManagement from './pages/RestaurantManagement';
-import UserProfile from '.src/pages/UserProfile';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';  
 
-// ... (isAuthenticated and PrivateRoute)
+const App = () => {
+    const { user, login, logout } = useAuth();
 
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        >
-          {/* Add the new route here */}
-          <Route path="profile" element={<UserProfile />} />
-          <Route path="users" element={<UserManagement />} />
-          <Route path="hotels" element={<HotelManagement />} />
-          <Route path="restaurants" element={<RestaurantManagement />} />
-        </Route>
-      </Routes>
-    </Router>
-  );
-}
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/login" element={<LoginPage login={login} />} />
+
+                {/* Role-Based Routes */}
+                <Route path="/admin" element={<PrivateRoute user={user} role="Admin"><AdminPage /></PrivateRoute>} />
+                <Route path="/hotel-manager" element={<PrivateRoute user={user} role="HotelManager"><HotelManagerPage /></PrivateRoute>} />
+                <Route path="/restaurant-manager" element={<PrivateRoute user={user} role="RestaurantManager"><RestaurantManagerPage /></PrivateRoute>} />
+                <Route path="/event-manager" element={<PrivateRoute user={user} role="EventManager"><EventManagerPage /></PrivateRoute>} />
+            </Routes>
+        </Router>
+    );
+};
 
 export default App;
