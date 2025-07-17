@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import './LogInPages.css';
-import axios from 'axios';
+import React, { useState } from "react";
+import "./LogInPages.css";
+import axios from "axios";
 
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const LogInPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -17,7 +17,9 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     //need to be checked
-    const response = await axios.get('http://localhost:5281/User/LogIn');
+    const response = await axios.get("http://localhost:5281/User/LogIn");
+
+    console.log(response);
   };
 
   return (
@@ -50,4 +52,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LogInPage;
