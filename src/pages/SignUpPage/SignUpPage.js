@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./SignUpPage.css";
 
 const SignUpPage = () => {
@@ -155,6 +156,9 @@ const SignUpPage = () => {
         </fieldset>
 
         <button type="submit">Sign Up</button>
+        <p className="login-link">
+          Already have an account? <Link to="/login">Log in</Link>
+        </p>
       </form>
     </div>
   );

@@ -102,6 +102,11 @@ button:hover {
     background-color: #218838;
 }
 
+.login-link {
+    text-align: center;
+    margin-top: 1rem;
+}
+
 /* Responsive Design */
 @media (max-width: 640px) {
     .signup-form {

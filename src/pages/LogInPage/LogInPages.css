@@ -56,6 +56,11 @@ button:hover {
   background-color: #0056b3;
 }
 
+.signup-link {
+  text-align: center;
+  margin-top: 1rem;
+}
+
 /* Responsive Design */
 @media (max-width: 480px) {
   .login-form {

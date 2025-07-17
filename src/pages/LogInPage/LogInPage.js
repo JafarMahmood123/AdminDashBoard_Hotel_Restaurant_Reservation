@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./LogInPages.css";
 import axios from "axios";
 
@@ -16,10 +17,19 @@ const LogInPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //need to be checked
-    const response = await axios.get("http://localhost:5281/User/LogIn");
-
-    console.log(response);
+    try {
+        const response = await axios.post("http://localhost:5281/User/Login", {
+          email,
+          password,
+        });
+      // Assuming the API returns a JWT token in the response data
+      const token = response.data;
+      // You can now store the token (e.g., in localStorage) and redirect the user
+      console.log("Login successful, token:", token);
+    } catch (error) {
+      console.error("Login failed:", error);
+      // Handle login error (e.g., show an error message to the user)
+    }
   };
 
   return (
@@ -47,6 +57,9 @@ const LogInPage = () => {
           />
         </div>
         <button type="submit">Login</button>
+        <p className="signup-link">
+          Don't have an account? <Link to="/signup">Sign up</Link>
+        </p>
       </form>
     </div>
   );
