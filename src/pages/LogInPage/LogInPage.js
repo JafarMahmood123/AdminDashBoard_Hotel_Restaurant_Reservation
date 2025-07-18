@@ -27,21 +27,16 @@ const LogInPage = () => {
 
       const token = response.data;
       
-      // 1. Store the token securely (e.g., in localStorage)
       localStorage.setItem("authToken", token);
 
       // 2. Decode the token to get the user's role
       const decodedToken = jwtDecode(token);
       
-      // IMPORTANT: The claim name for the role might be different.
-      // Common names are 'role', 'roles', or a custom URL-like claim.
-      // Check your backend's JWT configuration.
       const userRole = decodedToken.role || decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
       console.log("Login successful! Role:", userRole);
 
-      // 3. Redirect based on the role
-      if (userRole === "Admin") {
+      if (userRole.toUpperCase() === "ADMIN") {
         navigate("/admin"); // Redirect to the admin dashboard
       } else {
         navigate("/"); // Redirect regular users to the homepage
