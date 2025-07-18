@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import "./LogInPages.css";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode"; // Correct import
 
 const LogInPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // Hook for navigation
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -18,17 +20,36 @@ const LogInPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const response = await axios.post("http://localhost:5281/User/Login", {
-          email,
-          password,
-        });
-      // Assuming the API returns a JWT token in the response data
+      const response = await axios.post("http://localhost:5281/User/Login", {
+        email,
+        password,
+      });
+
       const token = response.data;
-      // You can now store the token (e.g., in localStorage) and redirect the user
-      console.log("Login successful, token:", token);
+      
+      // 1. Store the token securely (e.g., in localStorage)
+      localStorage.setItem("authToken", token);
+
+      // 2. Decode the token to get the user's role
+      const decodedToken = jwtDecode(token);
+      
+      // IMPORTANT: The claim name for the role might be different.
+      // Common names are 'role', 'roles', or a custom URL-like claim.
+      // Check your backend's JWT configuration.
+      const userRole = decodedToken.role || decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+
+      console.log("Login successful! Role:", userRole);
+
+      // 3. Redirect based on the role
+      if (userRole === "Admin") {
+        navigate("/admin"); // Redirect to the admin dashboard
+      } else {
+        navigate("/"); // Redirect regular users to the homepage
+      }
+
     } catch (error) {
       console.error("Login failed:", error);
-      // Handle login error (e.g., show an error message to the user)
+      // You can add logic here to show an error message to the user
     }
   };
 
@@ -57,9 +78,6 @@ const LogInPage = () => {
           />
         </div>
         <button type="submit">Login</button>
-        <p className="signup-link">
-          Don't have an account? <Link to="/signup">Sign up</Link>
-        </p>
       </form>
     </div>
   );
