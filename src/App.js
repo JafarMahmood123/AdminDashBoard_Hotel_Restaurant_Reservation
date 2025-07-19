@@ -1,7 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LogInPage from "./pages/LogInPage/LogInPage.js";
-import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.js";
+import HomePage from "./pages/HomePage/HomePage.js";
+import UserManagement from "./pages/UserManagement/UserManagement.js";
+import RestaurantManagement from "./pages/RestaurantManagement/RestaurantManagement.js";
+import HotelManagement from "./pages/HotelManagement/HotelManagement.js";
 
 function App() {
   return (
@@ -9,7 +12,11 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/login" element={<LogInPage />} />
-          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/homepage" element={<HomePage />} />
+          <Route path="/usermanagement" element={<UserManagement />} />
+          <Route path="/restaurantmanagement" element={<RestaurantManagement />} />
+          <Route path="/hotelmanagement" element={<HotelManagement />} />
+          <Route path="/eventmanagement" element={<HomePage />} />
           <Route path="/" element={<LogInPage />} />
         </Routes>
       </div>
