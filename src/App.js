@@ -1,7 +1,6 @@
-import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LogInPage from "./pages/LogInPage/LogInPage.js";
-import HomePage from "./pages/HomePage/HomePage.js";
+import HomePage from "./pages/HomePage/HomePage.jsx";
 import UserManagement from "./pages/UserManagement/UserManagement.js";
 import RestaurantManagement from "./pages/RestaurantManagement/RestaurantManagement.js";
 import HotelManagement from "./pages/HotelManagement/HotelManagement.js";
