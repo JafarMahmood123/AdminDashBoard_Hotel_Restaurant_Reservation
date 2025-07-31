@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import ApiService from '../../api/apiService';
-import Table from '../../components/common/Table.jsx';
+import ApiService from 'C:/Users/Jafar Mahmood/admin-dashboard/src/api/apiService.jsx';
+import Table from 'C:/Users/Jafar Mahmood/admin-dashboard/src/components/common/Table.jsx';
 
 const HotelManagementPage = () => {
   const [hotels, setHotels] = useState([]);

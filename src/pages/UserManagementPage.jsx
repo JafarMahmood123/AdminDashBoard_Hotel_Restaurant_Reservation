@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ApiService from '../api/apiService.jsx';
-import Table from '../components/common/Table.jsx';
+import Table from 'C:/Users/Jafar Mahmood/admin-dashboard/src/components/common/Table.jsx';
+import 'C:/Users/Jafar Mahmood/admin-dashboard/src/assets/styles/UserManagementPage.css';
 
 const UserManagementPage = () => {
   const [users, setUsers] = useState([]);
@@ -8,7 +9,16 @@ const UserManagementPage = () => {
   const fetchUsers = async () => {
     try {
       const response = await ApiService.getUsers();
-      setUsers(response.data);
+      // Map users to create a fullName property
+      const usersWithFullName = response.data.map(user => ({
+        ...user,
+        fullName: `${user.firstName} ${user.lastName}`.trim()
+      }));
+
+      // Sort the users array by the fullName property
+      usersWithFullName.sort((a, b) => a.fullName.localeCompare(b.fullName));
+
+      setUsers(usersWithFullName);
     } catch (error) {
       console.error('Error fetching users:', error);
     }
@@ -34,8 +44,9 @@ const UserManagementPage = () => {
     }
   };
 
+  // The 'key' for the Name column is now 'fullName'
   const columns = [
-    { key: 'name', header: 'Name' },
+    { key: 'fullName', header: 'Name' },
     { key: 'email', header: 'Email' },
     { key: 'role', header: 'Role' },
     { key: 'status', header: 'Status' },

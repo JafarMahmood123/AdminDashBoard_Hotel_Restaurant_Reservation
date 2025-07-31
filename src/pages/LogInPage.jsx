@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ApiService from '../api/apiService';
-import 'C:/Users/Jafar Mahmood/admin-dashboard/src/assets/styles/LogInPage.css';
+import '../assets/styles/LogInPage.css'; // Corrected CSS import
 
 const LogInPage = () => {
   const [email, setEmail] = useState('');
@@ -14,12 +14,16 @@ const LogInPage = () => {
     setError('');
 
     try {
-      const response = await ApiService.login({ email, password });
-      // Assuming the token is in response.data.token
-      localStorage.setItem('token', response.data.token);
+      // ApiService.login now handles token storage and admin role validation.
+      // It will throw an error if the login is invalid or the user is not an admin.
+      await ApiService.login({ email, password });
+
+      // If login is successful, navigate to the admin home page.
       navigate('/');
     } catch (err) {
-      setError('Failed to login. Please check your credentials.');
+      // Display a more specific error message from the API service or a generic one.
+      const errorMessage = err.response?.data?.message || err.message || 'Failed to login. Please check your credentials.';
+      setError(errorMessage);
       console.error('Login error:', err);
     }
   };

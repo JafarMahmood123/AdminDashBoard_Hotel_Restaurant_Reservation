@@ -1,5 +1,5 @@
 import React from 'react';
-import './Table.css';
+import 'C:/Users/Jafar Mahmood/admin-dashboard/src/assets/styles/Table.css';
 
 const Table = ({ data, columns, onEdit, onDelete }) => {
   if (!data) {

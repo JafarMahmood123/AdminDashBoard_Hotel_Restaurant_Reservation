@@ -1,8 +1,95 @@
-.home-page-container h1 {
-    color: #333;
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+    padding: 2rem;
+    box-sizing: border-box;
 }
 
-.home-page-container p {
+.home-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.home-header h1 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.home-header p {
+    font-size: 1.2rem;
     color: #666;
-    font-size: 1.1rem;
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.management-button {
+    padding: 1.5rem 2rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+}
+
+.management-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+
+.management-button:active {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+}
+
+/* Adding specific colors for variety */
+.management-button:nth-child(2) {
+    background-color: #28a745;
+    /* Green */
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
+}
+
+.management-button:nth-child(2):hover {
+    background-color: #1e7e34;
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+}
+
+.management-button:nth-child(3) {
+    background-color: #ffc107;
+    /* Yellow */
+    color: #212529;
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+}
+
+.management-button:nth-child(3):hover {
+    background-color: #d39e00;
+    box-shadow: 0 6px 20px rgba(255, 193, 7, 0.3);
+}
+
+.management-button:nth-child(4) {
+    background-color: #17a2b8;
+    /* Teal */
+    box-shadow: 0 4px 15px rgba(23, 162, 184, 0.2);
+}
+
+.management-button:nth-child(4):hover {
+    background-color: #117a8b;
+    box-shadow: 0 6px 20px rgba(23, 162, 184, 0.3);
 }
