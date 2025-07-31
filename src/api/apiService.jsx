@@ -1,7 +1,6 @@
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
 
-const API_URL = 'http://localhost:8080/api'; // Your backend URL
+const API_URL = 'http://localhost:5281';
 
 class ApiService {
   constructor() {
@@ -11,8 +10,6 @@ class ApiService {
         'Content-Type': 'application/json',
       },
     });
-
-    // Automatically add the auth token to each request
     this.axios.interceptors.request.use((config) => {
       const token = localStorage.getItem('token');
       if (token) {
@@ -22,12 +19,10 @@ class ApiService {
     });
   }
 
-  // Authentication
   login(credentials) {
-    return this.axios.post('/auth/login', credentials);
+    return this.axios.post('/user/login', credentials);
   }
 
-  // User Management
   getUsers() {
     return this.axios.get('/users');
   }

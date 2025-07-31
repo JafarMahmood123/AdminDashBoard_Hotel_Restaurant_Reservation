@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ApiService from '../api/apiService';
-import './LogInPages.css';
+import 'C:/Users/Jafar Mahmood/admin-dashboard/src/assets/styles/LogInPage.css';
 
 const LogInPage = () => {
   const [email, setEmail] = useState('');
