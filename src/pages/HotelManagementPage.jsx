@@ -118,8 +118,7 @@ const HotelManagementPage = () => {
   };
 
   const handleManageRooms = (hotel) => {
-    // Placeholder for future implementation
-    console.log('Managing rooms for:', hotel.name);
+    navigate(`/hotels/${hotel.id}/rooms`);
   };
 
   const columns = [

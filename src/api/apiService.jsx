@@ -171,6 +171,38 @@ class ApiService {
   updateAmenityForHotel(hotelId, amenityId, newPrice){
     return this.axios.put(`/hotels/${hotelId}/amenities/${amenityId}`, newPrice);
   }
+
+  getRoomsByHotelId(hotelId) {
+    return this.axios.get(`/hotels/${hotelId}/rooms`);
+  }
+
+  getRoomTypeById(id) {
+    return this.axios.get(`/roomtypes/${id}`);
+  }
+
+  getAmenitiesByRoomId(roomId) {
+    return this.axios.get(`/rooms/${roomId}/amenities`);
+  }
+
+  addRoomToHotel(hotelId, roomData) {
+    return this.axios.post(`/hotels/${hotelId}/rooms`, roomData);
+  }
+
+  getRoomTypes() {
+    return this.axios.get('/roomtype');
+  }
+
+  deleteRoomFromHotel(hotelId, roomId) {
+    return this.axios.delete(`/hotels/${hotelId}/rooms/${roomId}`);
+  }
+
+  updateRoomForHotel(hotelId, roomId, roomData) {
+    return this.axios.put(`/rooms/${roomId}`, roomData);
+  }
+
+  addRoomType(description) {
+    return this.axios.post(`/roomtype/${encodeURIComponent(description)}`);
+  }
 }
 
 export default new ApiService();
