@@ -163,6 +163,14 @@ class ApiService {
   deleteAmenityFromHotel(hotelId, amenityId) {
     return this.axios.delete(`/hotels/${hotelId}/amenities/${amenityId}`);
   }
+
+  deleteAmenityFromHotel(hotelId, amenityId) {
+    return this.axios.delete(`/hotels/${hotelId}/amenities/${amenityId}`);
+  }
+
+  updateAmenityForHotel(hotelId, amenityId, newPrice){
+    return this.axios.put(`/hotels/${hotelId}/amenities/${amenityId}`, newPrice);
+  }
 }
 
 export default new ApiService();

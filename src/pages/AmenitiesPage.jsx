@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import ApiService from '../api/apiService';
 import Table from '../components/common/Table';
 import AddHotelAmenityModal from '../components/common/AddHotelAmenityModal';
+import EditHotelAmenityModal from '../components/common/EditHotelAmenityModal';
 import ConfirmDeleteAmenityModal from '../components/common/ConfirmDeleteAmenityModal';
 import '../assets/styles/AmenitiesPage.css';
 
@@ -13,6 +14,8 @@ const AmenitiesPage = () => {
   const [hotelName, setHotelName] = useState('');
   const [loading, setLoading] = useState(true);
   const [isAddAmenityModalOpen, setIsAddAmenityModalOpen] = useState(false);
+  const [isEditAmenityModalOpen, setIsEditAmenityModalOpen] = useState(false);
+  const [amenityToEdit, setAmenityToEdit] = useState(null);
   const [amenityToDelete, setAmenityToDelete] = useState(null);
 
   const fetchData = async () => {
@@ -37,6 +40,15 @@ const AmenitiesPage = () => {
   
   const handleAmenityAdded = () => {
     fetchData();
+  };
+  
+  const handleAmenityUpdated = () => {
+    fetchData();
+  };
+
+  const handleEditClick = (amenity) => {
+    setAmenityToEdit(amenity);
+    setIsEditAmenityModalOpen(true);
   };
 
   const handleDeleteClick = (amenity) => {
@@ -65,7 +77,7 @@ const AmenitiesPage = () => {
   
   const renderActions = (amenity) => (
     <>
-      <button className="btn-edit" onClick={() => console.log('Edit amenity:', amenity.id)}>Edit</button>
+      <button className="btn-edit" onClick={() => handleEditClick(amenity)}>Edit Price</button>
       <button className="btn-delete" onClick={() => handleDeleteClick(amenity)}>Delete</button>
     </>
   );
@@ -84,6 +96,14 @@ const AmenitiesPage = () => {
           hotelId={hotelId}
           onClose={() => setIsAddAmenityModalOpen(false)}
           onAmenityAdded={handleAmenityAdded}
+        />
+      )}
+      {isEditAmenityModalOpen && (
+        <EditHotelAmenityModal
+          amenity={amenityToEdit}
+          hotelId={hotelId}
+          onClose={() => setIsEditAmenityModalOpen(false)}
+          onAmenityUpdated={handleAmenityUpdated}
         />
       )}
       {amenityToDelete && (
