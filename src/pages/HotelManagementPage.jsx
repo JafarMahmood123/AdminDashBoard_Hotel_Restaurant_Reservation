@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import ApiService from '../api/apiService.jsx';
 import Table from '../components/common/Table.jsx';
 import AddHotelModal from '../components/common/AddHotelModal.jsx';
+import EditHotelModal from '../components/common/EditHotelModal.jsx';
 import ConfirmDeleteHotelModal from '../components/common/ConfirmDeleteHotelModal.jsx';
 
 const HotelManagementPage = () => {
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAddHotelModalOpen, setIsAddHotelModalOpen] = useState(false);
+  const [isEditHotelModalOpen, setIsEditHotelModalOpen] = useState(false);
+  const [hotelToEdit, setHotelToEdit] = useState(null);
   const [hotelToDelete, setHotelToDelete] = useState(null);
 
   const fetchHotelsAndDetails = async () => {
@@ -77,7 +80,8 @@ const HotelManagementPage = () => {
   }, []);
 
   const handleEdit = (hotel) => {
-    console.log('Editing hotel:', hotel);
+    setHotelToEdit(hotel);
+    setIsEditHotelModalOpen(true);
   };
 
   const handleDelete = (hotel) => {
@@ -86,8 +90,8 @@ const HotelManagementPage = () => {
 
   const handleConfirmDelete = async (hotelId) => {
     try {
-      const response = await ApiService.deleteHotel(hotelId);
-      fetchHotelsAndDetails();
+      await ApiService.deleteHotel(hotelId);
+      fetchHotelsAndDetails(); // Refresh the list with details
     } catch (error) {
       console.error('Error deleting hotel:', error);
     } finally {
@@ -100,6 +104,10 @@ const HotelManagementPage = () => {
   };
   
   const handleHotelAdded = () => {
+      fetchHotelsAndDetails();
+  }
+  
+  const handleHotelUpdated = () => {
       fetchHotelsAndDetails();
   }
 
@@ -125,6 +133,13 @@ const HotelManagementPage = () => {
         <AddHotelModal
           onClose={() => setIsAddHotelModalOpen(false)}
           onHotelAdded={handleHotelAdded}
+        />
+      )}
+      {isEditHotelModalOpen && (
+        <EditHotelModal
+          hotel={hotelToEdit}
+          onClose={() => setIsEditHotelModalOpen(false)}
+          onHotelUpdated={handleHotelUpdated}
         />
       )}
       {hotelToDelete && (

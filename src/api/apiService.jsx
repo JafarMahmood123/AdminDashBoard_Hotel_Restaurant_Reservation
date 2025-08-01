@@ -128,6 +128,10 @@ class ApiService {
     return this.axios.post('/hotels', hotelData);
   }
 
+  updateHotel(id, hotelData) {
+    return this.axios.put(`/hotels/${id}`, hotelData);
+  }
+
   deleteHotel(id) {
     return this.axios.delete(`/hotels/${id}`);
   }
