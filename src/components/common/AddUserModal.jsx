@@ -63,12 +63,7 @@ const AddUserModal = ({ onClose, onUserAdded }) => {
     try {
       // Step 1: Get the location ID from the backend
       const locationResponse = await ApiService.getLocationId(formData.countryId, formData.cityId);
-      console.log('*************************************************');
-      console.log(locationResponse);
       const locationId = locationResponse.data;
-
-      console.log('*************************************************');
-      console.log(locationId);
 
       // Step 2: Prepare user data with the locationId
       const newUser = {
@@ -80,8 +75,6 @@ const AddUserModal = ({ onClose, onUserAdded }) => {
         locationId: locationId,
       };
 
-      console.log('*************************************************');
-      console.log(newUser);
       // Step 3: Send the request to add the new user
       await ApiService.addUser(newUser);
 

@@ -79,9 +79,6 @@ class ApiService {
   }
 
   getLocationId(countryId, cityId) {
-    console.log('*************************************************');
-    console.log(countryId);
-    console.log(cityId);
     return this.axios.post(`/location/check`, { countryId, cityId });
   }
 
