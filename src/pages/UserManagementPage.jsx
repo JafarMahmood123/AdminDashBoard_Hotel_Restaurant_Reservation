@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import ApiService from '../api/apiService.jsx';
-import Table from 'C:/Users/Jafar Mahmood/admin-dashboard/src/components/common/Table.jsx';
-import 'C:/Users/Jafar Mahmood/admin-dashboard/src/assets/styles/UserManagementPage.css';
-import AddUserModal from 'C:/Users/Jafar Mahmood/admin-dashboard/src/components/common/AddUserModal.jsx';
+import Table from '../components/common/Table.jsx';
+import '../assets/styles/UserManagementPage.css';
+import AddUserModal from '../components/common/AddUserModal.jsx';
+import ConfirmDeleteModal from '../components/common/ConfirmDeleteModal.jsx';
+import EditUserModal from '../components/common/EditUserModal.jsx';
 
 const UserManagementPage = () => {
   const [users, setUsers] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+  const [userToEdit, setUserToEdit] = useState(null);
 
   const fetchUsers = async () => {
     try {
@@ -26,20 +32,37 @@ const UserManagementPage = () => {
     fetchUsers();
   }, []);
 
-  const handleEdit = (user) => {
-    console.log('Editing user:', user);
-    // Add your edit logic here
+  const handleEditClick = (user) => {
+    setUserToEdit(user);
+    setIsEditModalOpen(true);
   };
 
-  const handleDelete = async (userId) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
+  const handleDeleteClick = (userId) => {
+    setUserToDelete(userId);
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (userToDelete) {
       try {
-        await ApiService.deleteUser(userId);
+        await ApiService.deleteUser(userToDelete);
         fetchUsers(); // Refresh the list
       } catch (error) {
         console.error('Error deleting user:', error);
+      } finally {
+        setIsConfirmModalOpen(false);
+        setUserToDelete(null);
       }
     }
+  };
+
+  const handleCancelDelete = () => {
+    setIsConfirmModalOpen(false);
+    setUserToDelete(null);
+  };
+
+  const handleUserUpdated = () => {
+    fetchUsers();
   };
 
   const columns = [
@@ -52,16 +75,32 @@ const UserManagementPage = () => {
   return (
     <div className="page-container">
       <h2>User Management</h2>
-      <button className="btn-add" onClick={() => setIsModalOpen(true)}>Add New User</button>
+      <button className="btn-add" onClick={() => setIsAddUserModalOpen(true)}>Add New User</button>
       
-      {isModalOpen && (
+      {isAddUserModalOpen && (
         <AddUserModal 
-          onClose={() => setIsModalOpen(false)} 
+          onClose={() => setIsAddUserModalOpen(false)} 
           onUserAdded={fetchUsers} 
         />
       )}
 
-      <Table data={users} columns={columns} onEdit={handleEdit} onDelete={handleDelete} />
+      {isEditModalOpen && (
+        <EditUserModal
+          user={userToEdit}
+          onClose={() => setIsEditModalOpen(false)}
+          onUserUpdated={handleUserUpdated}
+        />
+      )}
+
+      {isConfirmModalOpen && (
+        <ConfirmDeleteModal 
+          message="Are you sure you want to delete this user?"
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
+      )}
+
+      <Table data={users} columns={columns} onEdit={handleEditClick} onDelete={handleDeleteClick} />
     </div>
   );
 };

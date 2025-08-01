@@ -65,23 +65,42 @@ class ApiService {
     return this.axios.post('/user/signup', userData);
   }
 
-  deleteUser(id) {
-    return this.axios.delete(`/users/${id}`);
+  updateUser(id, userData) {
+    return this.axios.put(`/user/${id}`, userData);
   }
 
-  // Location Endpoints (Countries, Cities, Location ID)
+  deleteUser(id) {
+    return this.axios.delete(`/user/${id}`);
+  }
+
+  // Location Endpoints
   getCountries() {
     return this.axios.get('/countries');
+  }
+
+  getCountryById(id) {
+    return this.axios.get(`/countries/${id}`);
   }
 
   getCitiesByCountry(countryId) {
     return this.axios.get(`/cities/country/${countryId}`);
   }
 
+  getCityById(id) {
+    return this.axios.get(`/cities/${id}`);
+  }
+
   getLocationId(countryId, cityId) {
     return this.axios.post(`/location/check`, { countryId, cityId });
   }
 
+  getLocationById(id) {
+    return this.axios.get(`/location/${id}`);
+  }
+  
+  getLocalLocationById(id) {
+      return this.axios.get(`/local-locations/${id}`);
+  }
 
   // Restaurant Management
   getRestaurants() {
@@ -99,6 +118,10 @@ class ApiService {
 
   deleteHotel(id) {
     return this.axios.delete(`/hotels/${id}`);
+  }
+  
+  getPropertyTypeById(id) {
+      return this.axios.get(`/propertyTypes/${id}`);
   }
 }
 
