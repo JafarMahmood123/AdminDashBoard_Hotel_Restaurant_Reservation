@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
-const API_URL = 'http://localhost:5281';
+const API_URL = 'http://localhost:5281'; // Your backend URL
 
 class ApiService {
   constructor() {
@@ -21,8 +21,9 @@ class ApiService {
     });
   }
 
+  // ... (login, logout, getCurrentUser methods remain the same)
   async login(credentials) {
-    const response = await this.axios.post('/user/login', credentials);
+    const response = await this.axios.post('/auth/login', credentials);
     const { token } = response.data;
 
     if (token) {
@@ -55,14 +56,35 @@ class ApiService {
     }
   }
 
-
+  // User Management
   getUsers() {
     return this.axios.get('/user');
+  }
+
+  addUser(userData) {
+    return this.axios.post('/user/signup', userData);
   }
 
   deleteUser(id) {
     return this.axios.delete(`/users/${id}`);
   }
+
+  // Location Endpoints (Countries, Cities, Location ID)
+  getCountries() {
+    return this.axios.get('/countries');
+  }
+
+  getCitiesByCountry(countryId) {
+    return this.axios.get(`/cities/country/${countryId}`);
+  }
+
+  getLocationId(countryId, cityId) {
+    console.log('*************************************************');
+    console.log(countryId);
+    console.log(cityId);
+    return this.axios.post(`/location/check`, { countryId, cityId });
+  }
+
 
   // Restaurant Management
   getRestaurants() {

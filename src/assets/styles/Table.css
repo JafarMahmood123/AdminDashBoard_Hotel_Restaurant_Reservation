@@ -1,14 +1,29 @@
+.table {
+    width: 100%;
+    /* Make the table take up the full width of its container */
+    border-collapse: collapse;
+    /* Collapse borders for a cleaner look */
+    margin-top: 1rem;
+    /* Add some space above the table */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    /* Ensures the border-radius is respected by child elements */
+}
+
 .table th,
 .table td {
-    padding: 12px 15px;
+    padding: 15px 20px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .table thead th {
     background-color: #007bff;
     color: white;
     font-weight: 600;
+    font-size: 1rem;
 }
 
 .table tbody tr:nth-of-type(even) {
@@ -19,20 +34,38 @@
     background-color: #f1f1f1;
 }
 
+.table tbody td {
+    color: #555;
+}
+
 .btn-edit,
 .btn-delete {
-    padding: 6px 12px;
+    padding: 8px 15px;
+    /* Slightly larger buttons */
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
     color: white;
-    margin-right: 5px;
+    margin-right: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s, transform 0.1s;
 }
 
 .btn-edit {
     background-color: #ffc107;
 }
 
+.btn-edit:hover {
+    background-color: #e0a800;
+    transform: scale(1.05);
+}
+
 .btn-delete {
     background-color: #dc3545;
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
 }
