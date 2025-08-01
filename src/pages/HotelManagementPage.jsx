@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import ApiService from '../api/apiService.jsx';
 import Table from '../components/common/Table.jsx';
+import AddHotelModal from '../components/common/AddHotelModal.jsx';
 
 const HotelManagementPage = () => {
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isAddHotelModalOpen, setIsAddHotelModalOpen] = useState(false);
 
   const fetchHotelsAndDetails = async () => {
     setLoading(true);
     try {
       const hotelsResponse = await ApiService.getHotels();
-
-      console.log("****************************************************************************");
-      console.log(hotelsResponse);
       const hotelsData = hotelsResponse.data;
 
       const detailedHotels = await Promise.all(
@@ -43,7 +42,7 @@ const HotelManagementPage = () => {
               const city = cityResponse.data.name;
               const localLocation = localLocationResponse.data.name;
 
-              location = ` ${country},${city},${localLocation}`;
+              location = `${localLocation}, ${city}, ${country}`;
 
             } catch (e) {
               console.error(`Failed to fetch location for hotel ${hotel.id}`, e);
@@ -52,6 +51,7 @@ const HotelManagementPage = () => {
 
           return {
             ...hotel,
+            description: hotel.description || 'No description available.',
             priceRange: `$${hotel.minPrice} - $${hotel.maxPrice}`,
             propertyType,
             location,
@@ -59,7 +59,10 @@ const HotelManagementPage = () => {
         })
       );
 
-      setHotels(detailedHotels);
+      // Sort hotels alphabetically by name before setting the state
+      const sortedHotels = detailedHotels.sort((a, b) => a.name.localeCompare(b.name));
+      setHotels(sortedHotels);
+
     } catch (error) {
       console.error('Error fetching hotels:', error);
     } finally {
@@ -85,6 +88,10 @@ const HotelManagementPage = () => {
       }
     }
   };
+  
+  const handleHotelAdded = () => {
+      fetchHotelsAndDetails();
+  }
 
   const columns = [
     { key: 'name', header: 'Name' },
@@ -103,7 +110,13 @@ const HotelManagementPage = () => {
   return (
     <div className="page-container">
       <h2>Hotel Management</h2>
-      <button className="btn-add">Add New Hotel</button>
+      <button className="btn-add" onClick={() => setIsAddHotelModalOpen(true)}>Add New Hotel</button>
+      {isAddHotelModalOpen && (
+        <AddHotelModal
+          onClose={() => setIsAddHotelModalOpen(false)}
+          onHotelAdded={handleHotelAdded}
+        />
+      )}
       <Table data={hotels} columns={columns} onEdit={handleEdit} onDelete={handleDelete} />
     </div>
   );

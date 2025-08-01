@@ -90,8 +90,8 @@ class ApiService {
     return this.axios.get(`/cities/${id}`);
   }
 
-  getLocationId(countryId, cityId) {
-    return this.axios.post(`/location/check`, { countryId, cityId });
+  getLocationId(countryId, cityId, locallocationId) {
+    return this.axios.post(`/location/check`, { countryId, cityId, locallocationId });
   }
 
   getLocationById(id) {
@@ -100,6 +100,14 @@ class ApiService {
   
   getLocalLocationById(id) {
       return this.axios.get(`/locallocation/${id}`);
+  }
+
+  getLocalLocationsByCity(cityId){
+      return this.axios.get(`/locallocation/city/${cityId}`);
+  }
+
+  addLocalLocation(localLocationData){
+      return this.axios.post(`/locallocation`, localLocationData);
   }
 
   // Restaurant Management
@@ -114,6 +122,10 @@ class ApiService {
   // Hotel Management
   getHotels() {
     return this.axios.get('/hotels');
+  }
+
+    addHotel(hotelData) {
+    return this.axios.post('/hotels', hotelData);
   }
 
   deleteHotel(id) {
