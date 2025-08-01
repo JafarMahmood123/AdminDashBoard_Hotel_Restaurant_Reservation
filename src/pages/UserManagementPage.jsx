@@ -100,7 +100,16 @@ const UserManagementPage = () => {
         />
       )}
 
-      <Table data={users} columns={columns} onEdit={handleEditClick} onDelete={handleDeleteClick} />
+      <Table 
+        data={users} 
+        columns={columns} 
+        renderActions={(user) => (
+          <>
+            <button className="btn-edit" onClick={() => handleEditClick(user)}>Edit</button>
+            <button className="btn-delete" onClick={() => handleDeleteClick(user)}>Delete</button>
+          </>
+        )}
+      />
     </div>
   );
 };

@@ -124,7 +124,11 @@ class ApiService {
     return this.axios.get('/hotels');
   }
 
-    addHotel(hotelData) {
+  getHotelById(id) {
+    return this.axios.get(`/hotels/${id}`);
+  }
+
+  addHotel(hotelData) {
     return this.axios.post('/hotels', hotelData);
   }
 
@@ -138,6 +142,26 @@ class ApiService {
   
   getPropertyTypeById(id) {
       return this.axios.get(`/propertyTypes/${id}`);
+  }
+
+  getAmenitiesByHotelId(hotelId) {
+    return this.axios.get(`/hotels/${hotelId}/amenities`);
+  }
+
+  getAllAmenities() {
+    return this.axios.get('/amenities');
+  }
+
+  addAmenity(amenityData) {
+    return this.axios.post('/amenities', amenityData);
+  }
+
+  addAmenityToHotel(hotelId, amenityId, price) {
+    return this.axios.post(`/hotels/${hotelId}/amenities/${amenityId}`, { price });
+  }
+
+  deleteAmenityFromHotel(hotelId, amenityId) {
+    return this.axios.delete(`/hotels/${hotelId}/amenities/${amenityId}`);
   }
 }
 

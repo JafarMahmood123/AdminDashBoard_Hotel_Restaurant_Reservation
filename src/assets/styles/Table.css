@@ -38,15 +38,18 @@
     color: #555;
 }
 
+/* Combined styles for all action buttons */
 .btn-edit,
-.btn-delete {
+.btn-delete,
+.btn-manage {
     padding: 8px 15px;
-    /* Slightly larger buttons */
     border: none;
     border-radius: 5px;
     cursor: pointer;
     color: white;
     margin-right: 8px;
+    margin-bottom: 5px;
+    /* Added for better spacing if they wrap */
     font-size: 0.9rem;
     font-weight: 500;
     transition: background-color 0.2s, transform 0.1s;
@@ -67,5 +70,17 @@
 
 .btn-delete:hover {
     background-color: #c82333;
+    transform: scale(1.05);
+}
+
+/* New style for manage buttons */
+.btn-manage {
+    background-color: #6c757d;
+    /* A neutral gray */
+}
+
+.btn-manage:hover {
+    background-color: #5a6268;
+    /* A darker gray on hover */
     transform: scale(1.05);
 }

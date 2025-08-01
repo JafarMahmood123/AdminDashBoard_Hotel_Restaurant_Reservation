@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ApiService from '../api/apiService.jsx';
 import Table from '../components/common/Table.jsx';
 import AddHotelModal from '../components/common/AddHotelModal.jsx';
@@ -12,6 +13,7 @@ const HotelManagementPage = () => {
   const [isEditHotelModalOpen, setIsEditHotelModalOpen] = useState(false);
   const [hotelToEdit, setHotelToEdit] = useState(null);
   const [hotelToDelete, setHotelToDelete] = useState(null);
+  const navigate = useNavigate();
 
   const fetchHotelsAndDetails = async () => {
     setLoading(true);
@@ -110,6 +112,15 @@ const HotelManagementPage = () => {
   const handleHotelUpdated = () => {
       fetchHotelsAndDetails();
   }
+  
+  const handleManageAmenities = (hotel) => {
+    navigate(`/hotels/${hotel.id}/amenities`);
+  };
+
+  const handleManageRooms = (hotel) => {
+    // Placeholder for future implementation
+    console.log('Managing rooms for:', hotel.name);
+  };
 
   const columns = [
     { key: 'name', header: 'Name' },
@@ -149,7 +160,18 @@ const HotelManagementPage = () => {
           onCancel={handleCancelDelete}
         />
       )}
-      <Table data={hotels} columns={columns} onEdit={handleEdit} onDelete={handleDelete} />
+      <Table 
+        data={hotels} 
+        columns={columns} 
+        renderActions={(hotel) => (
+          <>
+            <button className="btn-edit" onClick={() => handleEdit(hotel)}>Edit</button>
+            <button className="btn-delete" onClick={() => handleDelete(hotel)}>Delete</button>
+            <button className="btn-manage" onClick={() => handleManageAmenities(hotel)}>Manage Amenities</button>
+            <button className="btn-manage" onClick={() => handleManageRooms(hotel)}>Manage Rooms</button>
+          </>
+        )}
+      />
     </div>
   );
 };

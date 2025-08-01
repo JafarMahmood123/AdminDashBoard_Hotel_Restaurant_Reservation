@@ -11,6 +11,7 @@ import HomePage from "./pages/HomePage.jsx";
 import UserManagementPage from "./pages/UserManagementPage.jsx";
 import RestaurantManagementPage from "./pages/RestaurantManagementPage.jsx";
 import HotelManagementPage from "./pages/HotelManagementPage.jsx";
+import AmenitiesPage from "./pages/AmenitiesPage.jsx";
 
 const PrivateLayout = () => {
   const token = localStorage.getItem("token");
@@ -35,6 +36,7 @@ function App() {
           <Route path="/users" element={<UserManagementPage />} />
           <Route path="/restaurants" element={<RestaurantManagementPage />} />
           <Route path="/hotels" element={<HotelManagementPage />} />
+          <Route path="/hotels/:hotelId/amenities" element={<AmenitiesPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" />} />

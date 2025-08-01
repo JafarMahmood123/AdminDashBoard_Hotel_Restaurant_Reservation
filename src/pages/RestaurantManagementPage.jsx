@@ -44,7 +44,16 @@ const RestaurantManagementPage = () => {
     <div className="page-container">
       <h2>Restaurant Management</h2>
       <button className="btn-add">Add New Restaurant</button>
-      <Table data={restaurants} columns={columns} onEdit={handleEdit} onDelete={handleDelete} />
+      <Table 
+        data={restaurants} 
+        columns={columns} 
+        renderActions={(restaurant) => (
+          <>
+            <button className="btn-edit" onClick={() => handleEdit(restaurant)}>Edit</button>
+            <button className="btn-delete" onClick={() => handleDelete(restaurant)}>Delete</button>
+          </>
+        )}
+      />
     </div>
   );
 };
