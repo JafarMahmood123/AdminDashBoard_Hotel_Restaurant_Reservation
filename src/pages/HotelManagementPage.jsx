@@ -10,6 +10,9 @@ const HotelManagementPage = () => {
     setLoading(true);
     try {
       const hotelsResponse = await ApiService.getHotels();
+
+      console.log("****************************************************************************");
+      console.log(hotelsResponse);
       const hotelsData = hotelsResponse.data;
 
       const detailedHotels = await Promise.all(
@@ -40,7 +43,7 @@ const HotelManagementPage = () => {
               const city = cityResponse.data.name;
               const localLocation = localLocationResponse.data.name;
 
-              location = `${localLocation}, ${city}, ${country}`;
+              location = ` ${country},${city},${localLocation}`;
 
             } catch (e) {
               console.error(`Failed to fetch location for hotel ${hotel.id}`, e);

@@ -99,7 +99,7 @@ class ApiService {
   }
   
   getLocalLocationById(id) {
-      return this.axios.get(`/local-locations/${id}`);
+      return this.axios.get(`/locallocation/${id}`);
   }
 
   // Restaurant Management
