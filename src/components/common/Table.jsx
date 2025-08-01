@@ -26,7 +26,7 @@ const Table = ({ data, columns, onEdit, onDelete }) => {
               <button className="btn-edit" onClick={() => onEdit(item)}>
                 Edit
               </button>
-              <button className="btn-delete" onClick={() => onDelete(item.id)}>
+              <button className="btn-delete" onClick={() => onDelete(item)}>
                 Delete
               </button>
             </td>

@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import ApiService from '../api/apiService.jsx';
 import Table from '../components/common/Table.jsx';
 import AddHotelModal from '../components/common/AddHotelModal.jsx';
+import ConfirmDeleteHotelModal from '../components/common/ConfirmDeleteHotelModal.jsx';
 
 const HotelManagementPage = () => {
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAddHotelModalOpen, setIsAddHotelModalOpen] = useState(false);
+  const [hotelToDelete, setHotelToDelete] = useState(null);
 
   const fetchHotelsAndDetails = async () => {
     setLoading(true);
@@ -78,15 +80,23 @@ const HotelManagementPage = () => {
     console.log('Editing hotel:', hotel);
   };
 
-  const handleDelete = async (hotelId) => {
-    if (window.confirm('Are you sure you want to delete this hotel?')) {
-      try {
-        await ApiService.deleteHotel(hotelId);
-        fetchHotelsAndDetails(); // Refresh the list with details
-      } catch (error) {
-        console.error('Error deleting hotel:', error);
-      }
+  const handleDelete = (hotel) => {
+    setHotelToDelete(hotel);
+  };
+
+  const handleConfirmDelete = async (hotelId) => {
+    try {
+      const response = await ApiService.deleteHotel(hotelId);
+      fetchHotelsAndDetails();
+    } catch (error) {
+      console.error('Error deleting hotel:', error);
+    } finally {
+      setHotelToDelete(null);
     }
+  };
+
+  const handleCancelDelete = () => {
+    setHotelToDelete(null);
   };
   
   const handleHotelAdded = () => {
@@ -115,6 +125,13 @@ const HotelManagementPage = () => {
         <AddHotelModal
           onClose={() => setIsAddHotelModalOpen(false)}
           onHotelAdded={handleHotelAdded}
+        />
+      )}
+      {hotelToDelete && (
+        <ConfirmDeleteHotelModal
+          hotel={hotelToDelete}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
         />
       )}
       <Table data={hotels} columns={columns} onEdit={handleEdit} onDelete={handleDelete} />

@@ -22,10 +22,10 @@ const RestaurantManagementPage = () => {
     console.log('Editing restaurant:', restaurant);
   };
 
-  const handleDelete = async (restaurantId) => {
+  const handleDelete = async (restaurant) => {
     if (window.confirm('Are you sure you want to delete this restaurant?')) {
       try {
-        await ApiService.deleteRestaurant(restaurantId);
+        await ApiService.deleteRestaurant(restaurant.id);
         fetchRestaurants(); // Refresh the list
       } catch (error) {
         console.error('Error deleting restaurant:', error);

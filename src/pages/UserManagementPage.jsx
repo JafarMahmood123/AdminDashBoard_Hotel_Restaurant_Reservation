@@ -37,8 +37,8 @@ const UserManagementPage = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleDeleteClick = (userId) => {
-    setUserToDelete(userId);
+  const handleDeleteClick = (user) => {
+    setUserToDelete(user.id);
     setIsConfirmModalOpen(true);
   };
 
