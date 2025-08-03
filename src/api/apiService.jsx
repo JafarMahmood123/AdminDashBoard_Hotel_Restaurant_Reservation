@@ -135,12 +135,36 @@ class ApiService {
     return this.axios.get(`/restaurants/${restaurantId}/dishes`);
   }
 
+  getAllDishes() {
+    return this.axios.get('/dishes');
+  }
+
+  addDish(dishData) {
+    return this.axios.post('/dishes', dishData);
+  }
+
+  addDishToRestaurant(restaurantId, dishDetails) {
+    return this.axios.post(`/restaurants/${restaurantId}/dishes`, dishDetails);
+  }
+
+  deleteDishFromRestaurant(restaurantId, dishId) {
+    return this.axios.delete(`/restaurants/${restaurantId}/dishes/${dishId}`);
+  }
+
+  updateDishForRestaurant(restaurantId, dishId, dishData) {
+    return this.axios.put(`/restaurants/${restaurantId}/dishes/${dishId}`, dishData);
+  }
+
   getRestaurantCuisines(restaurantId) {
     return this.axios.get(`/restaurants/${restaurantId}/cuisines`);
   }
   
   getAllCuisines() {
     return this.axios.get('/cuisines');
+  }
+
+  addCuisine(cuisineData) {
+    return this.axios.post('/cuisines', cuisineData);
   }
   
   addCuisineToRestaurant(restaurantId, cuisineId) {
@@ -159,6 +183,10 @@ class ApiService {
     return this.axios.get('/features');
   }
   
+  addFeature(featureData) {
+    return this.axios.post('/features', featureData);
+  }
+  
   addFeatureToRestaurant(restaurantId, featureId) {
     return this.axios.post(`/restaurants/${restaurantId}/features/${featureId}`);
   }
@@ -170,11 +198,15 @@ class ApiService {
   getRestaurantMealTypes(restaurantId) {
     return this.axios.get(`/restaurants/${restaurantId}/mealtypes`);
   }
-  
+
   getAllMealTypes() {
     return this.axios.get('/mealtypes');
   }
-  
+
+  addMealType(mealTypeData) {
+    return this.axios.post('/mealtypes', mealTypeData);
+  }
+
   addMealTypeToRestaurant(restaurantId, mealTypeId) {
     return this.axios.post(`/restaurants/${restaurantId}/mealtypes/${mealTypeId}`);
   }
@@ -189,6 +221,10 @@ class ApiService {
 
   getAllTags() {
     return this.axios.get('/tags');
+  }
+
+  addTag(tagData) {
+    return this.axios.post('/tags', tagData);
   }
 
   addTagToRestaurant(restaurantId, tagId) {

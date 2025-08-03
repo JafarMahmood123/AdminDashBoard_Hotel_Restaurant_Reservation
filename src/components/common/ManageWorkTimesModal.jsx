@@ -2,15 +2,7 @@ import React, { useState } from 'react';
 import ApiService from '../../api/apiService';
 import '../../assets/styles/ManageWorkTimesModal.css';
 
-const dayOfWeekMapping = {
-  "Sunday": 0,
-  "Monday": 1,
-  "Tuesday": 2,
-  "Wednesday": 3,
-  "Thursday": 4,
-  "Friday": 5,
-  "Saturday": 6,
-};
+const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 const ManageWorkTimesModal = ({ restaurant, onClose, onWorkTimesUpdated }) => {
   const [formData, setFormData] = useState({
@@ -31,11 +23,11 @@ const ManageWorkTimesModal = ({ restaurant, onClose, onWorkTimesUpdated }) => {
       return;
     }
     try {
-      // Step 1: Create the new work time entry
+      // Step 1: Create the new work time entry with formatted time and string for the day
       const workTimePayload = {
-        day: dayOfWeekMapping[formData.dayOfWeek],
-        openHour: formData.openingTime,
-        closeHour: formData.closingTime,
+        day: formData.dayOfWeek,
+        openHour: `${formData.openingTime}:00`,
+        closeHour: `${formData.closingTime}:00`,
       };
       const workTimeResponse = await ApiService.addWorkTime(workTimePayload);
       const newWorkTimeId = workTimeResponse.data.id;
@@ -85,7 +77,7 @@ const ManageWorkTimesModal = ({ restaurant, onClose, onWorkTimesUpdated }) => {
           <ul className="worktime-list">
             {restaurant.workTimes.map(workTime => (
               <li key={workTime.id}>
-                <span>{workTime.dayOfWeek}: {workTime.openingTime} - {workTime.closingTime}</span>
+                <span>{dayNames[workTime.dayOfWeek]}: {workTime.openingTime} - {workTime.closingTime}</span>
                 <button className="btn-remove" onClick={() => onWorkTimesUpdated(workTime)}>Remove</button>
               </li>
             ))}

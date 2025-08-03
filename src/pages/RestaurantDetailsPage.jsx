@@ -12,6 +12,9 @@ import ManageTagsModal from '../components/common/ManageTagsModal';
 import ConfirmDeleteTagModal from '../components/common/ConfirmDeleteTagModal';
 import ManageWorkTimesModal from '../components/common/ManageWorkTimesModal';
 import ConfirmDeleteWorkTimeModal from '../components/common/ConfirmDeleteWorkTimeModal';
+import AddDishModal from '../components/common/AddDishModal';
+import ConfirmDeleteDishModal from '../components/common/ConfirmDeleteDishModal';
+import EditDishModal from '../components/common/EditDishModal'; // Import the new modal
 import '../assets/styles/RestaurantDetailsPage.css';
 
 const dayOfWeekMapping = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -40,6 +43,10 @@ const RestaurantDetailsPage = () => {
   const [tagToDelete, setTagToDelete] = useState(null);
   const [isManageWorkTimesModalOpen, setIsManageWorkTimesModalOpen] = useState(false);
   const [workTimeToDelete, setWorkTimeToDelete] = useState(null);
+  const [isAddDishModalOpen, setIsAddDishModalOpen] = useState(false);
+  const [dishToDelete, setDishToDelete] = useState(null);
+  const [dishToEdit, setDishToEdit] = useState(null);
+  const [isEditDishModalOpen, setIsEditDishModalOpen] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -119,6 +126,16 @@ const RestaurantDetailsPage = () => {
     setRestaurant(restaurantResponse.data);
   };
 
+  const handleDishAdded = async () => {
+    const dishesResponse = await ApiService.getDishesByRestaurantId(restaurantId);
+    setDishes(dishesResponse.data);
+  };
+
+  const handleDishUpdated = async () => {
+    const dishesResponse = await ApiService.getDishesByRestaurantId(restaurantId);
+    setDishes(dishesResponse.data);
+  };
+
   const handleConfirmDeleteCuisine = async (cuisineId) => {
     try {
       await ApiService.removeCuisineFromRestaurant(restaurantId, cuisineId);
@@ -172,6 +189,26 @@ const RestaurantDetailsPage = () => {
     } finally {
       setWorkTimeToDelete(null);
     }
+  };
+
+  const handleConfirmDeleteDish = async (dishId) => {
+    try {
+      await ApiService.deleteDishFromRestaurant(restaurantId, dishId);
+      handleDishAdded();
+    } catch (error) {
+      console.error('Error deleting dish:', error);
+    } finally {
+      setDishToDelete(null);
+    }
+  };
+
+  const handleCancelDeleteDish = () => {
+    setDishToDelete(null);
+  };
+
+  const handleEditClick = (dish) => {
+    setDishToEdit(dish);
+    setIsEditDishModalOpen(true);
   };
 
   const dishColumns = [
@@ -303,6 +340,31 @@ const RestaurantDetailsPage = () => {
           onCancel={() => setWorkTimeToDelete(null)}
         />
       )}
+      
+      {isAddDishModalOpen && (
+        <AddDishModal
+          restaurantId={restaurantId}
+          onClose={() => setIsAddDishModalOpen(false)}
+          onDishAdded={handleDishAdded}
+        />
+      )}
+
+      {dishToDelete && (
+        <ConfirmDeleteDishModal
+          dish={dishToDelete}
+          onConfirm={handleConfirmDeleteDish}
+          onCancel={handleCancelDeleteDish}
+        />
+      )}
+
+      {isEditDishModalOpen && (
+        <EditDishModal
+          dish={dishToEdit}
+          restaurantId={restaurantId}
+          onClose={() => setIsEditDishModalOpen(false)}
+          onDishUpdated={handleDishUpdated}
+        />
+      )}
 
       <div className="details-grid">
         <div className="detail-section">
@@ -362,10 +424,11 @@ const RestaurantDetailsPage = () => {
 
       <div className="detail-section">
         <h3>Dishes</h3>
+        <button className="btn-add" onClick={() => setIsAddDishModalOpen(true)}>Add New Dish</button>
         <Table data={dishes} columns={dishColumns} renderActions={(dish) => (
           <>
-            <button className="btn-edit">Edit</button>
-            <button className="btn-delete">Delete</button>
+            <button className="btn-edit" onClick={() => handleEditClick(dish)}>Edit</button>
+            <button className="btn-delete" onClick={() => setDishToDelete(dish)}>Delete</button>
           </>
         )} />
       </div>

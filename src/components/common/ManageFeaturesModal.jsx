@@ -5,35 +5,55 @@ import '../../assets/styles/ManageFeaturesModal.css';
 const ManageFeaturesModal = ({ restaurant, onClose, onFeaturesUpdated }) => {
   const [allFeatures, setAllFeatures] = useState([]);
   const [selectedFeature, setSelectedFeature] = useState('');
+  const [newFeatureName, setNewFeatureName] = useState('');
+  const [showNewFeatureForm, setShowNewFeatureForm] = useState(false);
   const [error, setError] = useState('');
 
+  const fetchAllFeatures = async () => {
+    try {
+      const response = await ApiService.getAllFeatures();
+      const availableFeatures = response.data.filter(
+        (feature) => !restaurant.features.find((f) => f.id === feature.id)
+      );
+      setAllFeatures(availableFeatures.sort((a, b) => a.name.localeCompare(b.name)));
+    } catch (error) {
+      console.error('Error fetching features:', error);
+      setError('Failed to load features.');
+    }
+  };
+
   useEffect(() => {
-    const fetchAllFeatures = async () => {
-      try {
-        const response = await ApiService.getAllFeatures();
-        // Filter out features already associated with the restaurant
-        const availableFeatures = response.data.filter(
-          (feature) => !restaurant.features.find((f) => f.id === feature.id)
-        );
-        setAllFeatures(availableFeatures.sort((a, b) => a.name.localeCompare(b.name)));
-      } catch (error) {
-        console.error('Error fetching features:', error);
-        setError('Failed to load features.');
-      }
-    };
     fetchAllFeatures();
   }, [restaurant.features]);
 
   const handleAddFeature = async () => {
-    if (!selectedFeature) {
-      setError('Please select a feature to add.');
-      return;
-    }
+    setError('');
     try {
-      await ApiService.addFeatureToRestaurant(restaurant.id, selectedFeature);
+      let featureId = selectedFeature;
+
+      if (showNewFeatureForm) {
+        if (!newFeatureName.trim()) {
+          setError('New feature name cannot be empty.');
+          return;
+        }
+        const response = await ApiService.addFeature({ name: newFeatureName });
+        featureId = response.data.id;
+      }
+
+      if (!featureId) {
+        setError('Please select or create a feature to add.');
+        return;
+      }
+
+      await ApiService.addFeatureToRestaurant(restaurant.id, featureId);
       onFeaturesUpdated();
+
+      // Reset form state
       setSelectedFeature('');
-      setError('');
+      setNewFeatureName('');
+      setShowNewFeatureForm(false);
+      fetchAllFeatures();
+
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to add feature.');
     }
@@ -48,13 +68,26 @@ const ManageFeaturesModal = ({ restaurant, onClose, onFeaturesUpdated }) => {
 
         <div className="form-group">
           <label>Add New Feature</label>
-          <div className="input-with-button">
-            <select value={selectedFeature} onChange={(e) => setSelectedFeature(e.target.value)}>
+          {showNewFeatureForm ? (
+            <input
+              type="text"
+              className="feature-input"
+              value={newFeatureName}
+              onChange={(e) => setNewFeatureName(e.target.value)}
+              placeholder="Enter new feature name"
+            />
+          ) : (
+            <select className="feature-input" value={selectedFeature} onChange={(e) => setSelectedFeature(e.target.value)}>
               <option value="">Select a feature</option>
               {allFeatures.map(feature => (
                 <option key={feature.id} value={feature.id}>{feature.name}</option>
               ))}
             </select>
+          )}
+          <div className="actions-container">
+            <button type="button" className="btn-link" onClick={() => setShowNewFeatureForm(!showNewFeatureForm)}>
+              {showNewFeatureForm ? 'Select Existing Feature' : 'Add New Feature'}
+            </button>
             <button className="btn-confirm-add" onClick={handleAddFeature}>Add</button>
           </div>
         </div>

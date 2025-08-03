@@ -20,3 +20,21 @@
 .mealtypes-list li:last-child {
     border-bottom: none;
 }
+
+.mealtype-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    /* Ensures padding doesn't affect width */
+}
+
+.actions-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.75rem;
+}
