@@ -115,8 +115,112 @@ class ApiService {
     return this.axios.get('/restaurants');
   }
 
+  getRestaurantById(id) {
+    return this.axios.get(`/restaurants/${id}`);
+  }
+
+  addRestaurant(restaurantData) {
+    return this.axios.post('/restaurants', restaurantData);
+  }
+
+  updateRestaurant(id, restaurantData) {
+    return this.axios.put(`/restaurants/${id}`, restaurantData);
+  }
+
   deleteRestaurant(id) {
     return this.axios.delete(`/restaurants/${id}`);
+  }
+
+  getDishesByRestaurantId(restaurantId) {
+    return this.axios.get(`/restaurants/${restaurantId}/dishes`);
+  }
+
+  getRestaurantCuisines(restaurantId) {
+    return this.axios.get(`/restaurants/${restaurantId}/cuisines`);
+  }
+  
+  getAllCuisines() {
+    return this.axios.get('/cuisines');
+  }
+  
+  addCuisineToRestaurant(restaurantId, cuisineId) {
+    return this.axios.post(`/restaurants/${restaurantId}/cuisines/${cuisineId}`);
+  }
+
+  removeCuisineFromRestaurant(restaurantId, cuisineId) {
+    return this.axios.delete(`/restaurants/${restaurantId}/cuisines/${cuisineId}`);
+  }
+  
+  getRestaurantFeatures(restaurantId) {
+    return this.axios.get(`/restaurants/${restaurantId}/features`);
+  }
+  
+  getAllFeatures() {
+    return this.axios.get('/features');
+  }
+  
+  addFeatureToRestaurant(restaurantId, featureId) {
+    return this.axios.post(`/restaurants/${restaurantId}/features/${featureId}`);
+  }
+
+  removeFeatureFromRestaurant(restaurantId, featureId) {
+    return this.axios.delete(`/restaurants/${restaurantId}/features/${featureId}`);
+  }
+
+  getRestaurantMealTypes(restaurantId) {
+    return this.axios.get(`/restaurants/${restaurantId}/mealtypes`);
+  }
+  
+  getAllMealTypes() {
+    return this.axios.get('/mealtypes');
+  }
+  
+  addMealTypeToRestaurant(restaurantId, mealTypeId) {
+    return this.axios.post(`/restaurants/${restaurantId}/mealtypes/${mealTypeId}`);
+  }
+
+  removeMealTypeFromRestaurant(restaurantId, mealTypeId) {
+    return this.axios.delete(`/restaurants/${restaurantId}/mealtypes/${mealTypeId}`);
+  }
+
+  getRestaurantTags(restaurantId) {
+    return this.axios.get(`/restaurants/${restaurantId}/tags`);
+  }
+
+  getAllTags() {
+    return this.axios.get('/tags');
+  }
+
+  addTagToRestaurant(restaurantId, tagId) {
+    return this.axios.post(`/restaurants/${restaurantId}/tags/${tagId}`);
+  }
+
+  removeTagFromRestaurant(restaurantId, tagId) {
+    return this.axios.delete(`/restaurants/${restaurantId}/tags/${tagId}`);
+  }
+
+  getRestaurantWorkTimes(restaurantId) {
+    return this.axios.get(`/restaurants/${restaurantId}/worktimes`);
+  }
+  
+  addWorkTime(workTimeData) {
+    return this.axios.post('/WorkTimes', workTimeData);
+  }
+  
+  addWorkTimeToRestaurant(restaurantId, workTimeId) {
+    console.log('***************************************');
+    console.log(restaurantId);
+    console.log('***************************************');
+    console.log(workTimeId);
+    return this.axios.post(`/restaurants/${restaurantId}/worktimes/${workTimeId}`);
+  }
+  
+  removeWorkTimeFromRestaurant(restaurantId, workTimeId) {
+    return this.axios.delete(`/restaurants/${restaurantId}/worktimes/${workTimeId}`);
+  }
+
+  getRestaurantCurrencyTypes(restaurantId) {
+    return this.axios.get(`/restaurants/${restaurantId}/currencytypes`);
   }
 
   // Hotel Management
@@ -158,10 +262,6 @@ class ApiService {
 
   addAmenityToHotel(hotelId, amenityId, price) {
     return this.axios.post(`/hotels/${hotelId}/amenities/${amenityId}`, { price });
-  }
-
-  deleteAmenityFromHotel(hotelId, amenityId) {
-    return this.axios.delete(`/hotels/${hotelId}/amenities/${amenityId}`);
   }
 
   deleteAmenityFromHotel(hotelId, amenityId) {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ApiService from '../api/apiService.jsx';
 import Table from '../components/common/Table.jsx';
 import '../assets/styles/UserManagementPage.css';
@@ -13,6 +14,7 @@ const UserManagementPage = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [userToEdit, setUserToEdit] = useState(null);
+  const navigate = useNavigate();
 
   const fetchUsers = async () => {
     try {
@@ -74,6 +76,7 @@ const UserManagementPage = () => {
 
   return (
     <div className="page-container">
+      <button className="btn-back" onClick={() => navigate('/')}>&larr; Back to Home</button>
       <h2>User Management</h2>
       <button className="btn-add" onClick={() => setIsAddUserModalOpen(true)}>Add New User</button>
       

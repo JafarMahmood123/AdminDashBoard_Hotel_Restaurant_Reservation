@@ -1,0 +1,10 @@
+/* This can share styles with other confirmation modals */
+.confirm-modal-content h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin: 0 0 1rem;
+}
+
+.confirm-modal-content p {
+    margin-bottom: 1.5rem;
+}

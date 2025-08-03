@@ -20,7 +20,9 @@ const Table = ({ data, columns, renderActions }) => {
         {data.map((item) => (
           <tr key={item.id}>
             {columns.map((col) => (
-              <td key={col.key}>{item[col.key]}</td>
+              <td key={col.key}>
+                {col.render ? col.render(item) : item[col.key]}
+              </td>
             ))}
             <td>
               {renderActions(item)}

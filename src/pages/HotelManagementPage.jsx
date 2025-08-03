@@ -137,6 +137,7 @@ const HotelManagementPage = () => {
 
   return (
     <div className="page-container">
+      <button className="btn-back" onClick={() => navigate('/')}>&larr; Back to Home</button>
       <h2>Hotel Management</h2>
       <button className="btn-add" onClick={() => setIsAddHotelModalOpen(true)}>Add New Hotel</button>
       {isAddHotelModalOpen && (
