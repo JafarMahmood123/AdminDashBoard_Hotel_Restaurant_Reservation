@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ApiService from '../api/apiService.jsx';
+import ApiService, { API_URL } from '../api/apiService.jsx';
 import Table from '../components/common/Table.jsx';
 import AddRestaurantModal from '../components/common/AddRestaurantModal.jsx';
 import EditRestaurantModal from '../components/common/EditRestaurantModal.jsx';
@@ -44,6 +44,16 @@ const RestaurantManagementPage = () => {
             }
           }
           
+          let imageUrl = '';
+          try {
+            const imageResponse = await ApiService.getRestaurantImages(restaurant.id);
+            if (imageResponse.data && imageResponse.data.length > 0) {
+              imageUrl = `${API_URL}${imageResponse.data[0]}`;
+            }
+          } catch (e) {
+            console.error(`Failed to fetch image for restaurant ${restaurant.id}`, e);
+          }
+
           const description = restaurant.description && restaurant.description.length > 50
             ? `${restaurant.description.substring(0, 50)}...`
             : restaurant.description;
@@ -53,6 +63,7 @@ const RestaurantManagementPage = () => {
             description,
             location,
             priceRange: `$${restaurant.minPrice} - $${restaurant.maxPrice}`,
+            imageUrl,
           };
         })
       );
@@ -110,6 +121,19 @@ const RestaurantManagementPage = () => {
 
   const columns = [
     { key: 'name', header: 'Name' },
+    {
+      key: 'imageUrl',
+      header: 'Image',
+      render: (restaurant) => (
+        restaurant.imageUrl ? (
+          <img 
+            src={restaurant.imageUrl} 
+            alt={restaurant.name} 
+            className="restaurant-image"
+          />
+        ) : 'No Image'
+      ),
+    },
     { key: 'description', header: 'Description' },
     { key: 'starRating', header: 'Star Rating' },
     { key: 'numberOfTables', header: 'Tables' },

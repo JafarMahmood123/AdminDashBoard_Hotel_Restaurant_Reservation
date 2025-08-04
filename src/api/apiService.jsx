@@ -1,15 +1,12 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
-const API_URL = 'http://localhost:5281'; // Your backend URL
+export const API_URL = 'http://localhost:5281'; // Your backend URL
 
 class ApiService {
   constructor() {
     this.axios = axios.create({
       baseURL: API_URL,
-      headers: {
-        'Content-Type': 'application/json',
-      },
     });
 
     this.axios.interceptors.request.use((config) => {
@@ -243,7 +240,21 @@ class ApiService {
   }
   
   removeWorkTimeFromRestaurant(workTimeId) {
-    return this.axios.delete(`/restaurants/worktimes/${workTimeId}`);
+    return this.axios.delete(`/worktimes/${workTimeId}`);
+  }
+  
+  getRestaurantImages(restaurantId) {
+    return this.axios.get(`/restaurants/${restaurantId}/images`);
+  }
+
+  addRestaurantImage(restaurantId, formData) {
+    return this.axios.post(`/restaurants/${restaurantId}/images`, formData);
+  }
+
+  deleteRestaurantImage(imagePath) {
+    return this.axios.delete('/restaurants/images', {
+      data: { imageUrl: imagePath }
+    });
   }
 
   getRestaurantCurrencyTypes(restaurantId) {

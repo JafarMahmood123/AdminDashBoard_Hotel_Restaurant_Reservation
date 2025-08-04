@@ -84,3 +84,10 @@
     /* A darker gray on hover */
     transform: scale(1.05);
 }
+
+.restaurant-image {
+    width: 100px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+}

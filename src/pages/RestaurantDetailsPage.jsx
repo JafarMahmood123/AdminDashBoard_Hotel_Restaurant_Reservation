@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import ApiService from '../api/apiService';
+import ApiService, { API_URL } from '../api/apiService';
 import Table from '../components/common/Table';
 import ManageCuisinesModal from '../components/common/ManageCuisinesModal';
 import ConfirmDeleteCuisineModal from '../components/common/ConfirmDeleteCuisineModal';
@@ -15,6 +15,8 @@ import ConfirmDeleteWorkTimeModal from '../components/common/ConfirmDeleteWorkTi
 import AddDishModal from '../components/common/AddDishModal';
 import ConfirmDeleteDishModal from '../components/common/ConfirmDeleteDishModal';
 import EditDishModal from '../components/common/EditDishModal';
+import ManageRestaurantImagesModal from '../components/common/ManageRestaurantImagesModal';
+import ConfirmDeleteImageModal from '../components/common/ConfirmDeleteImageModal';
 import '../assets/styles/RestaurantDetailsPage.css';
 
 const RestaurantDetailsPage = () => {
@@ -29,6 +31,7 @@ const RestaurantDetailsPage = () => {
   const [mealTypes, setMealTypes] = useState([]);
   const [tags, setTags] = useState([]);
   const [workTimes, setWorkTimes] = useState([]);
+  const [images, setImages] = useState([]);
   
   const [loading, setLoading] = useState(true);
   const [isManageCuisinesModalOpen, setIsManageCuisinesModalOpen] = useState(false);
@@ -45,6 +48,8 @@ const RestaurantDetailsPage = () => {
   const [dishToDelete, setDishToDelete] = useState(null);
   const [dishToEdit, setDishToEdit] = useState(null);
   const [isEditDishModalOpen, setIsEditDishModalOpen] = useState(false);
+  const [isManageImagesModalOpen, setIsManageImagesModalOpen] = useState(false);
+  const [imageToDelete, setImageToDelete] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -57,7 +62,8 @@ const RestaurantDetailsPage = () => {
         featuresResponse,
         mealTypesResponse,
         tagsResponse,
-        workTimesResponse
+        workTimesResponse,
+        imagesResponse,
       ] = await Promise.all([
         ApiService.getRestaurantById(restaurantId),
         ApiService.getDishesByRestaurantId(restaurantId),
@@ -66,7 +72,8 @@ const RestaurantDetailsPage = () => {
         ApiService.getRestaurantFeatures(restaurantId),
         ApiService.getRestaurantMealTypes(restaurantId),
         ApiService.getRestaurantTags(restaurantId),
-        ApiService.getRestaurantWorkTimes(restaurantId)
+        ApiService.getRestaurantWorkTimes(restaurantId),
+        ApiService.getRestaurantImages(restaurantId),
       ]);
       
       setRestaurant(restaurantResponse.data);
@@ -77,6 +84,10 @@ const RestaurantDetailsPage = () => {
       setMealTypes(mealTypesResponse.data);
       setTags(tagsResponse.data);
       setWorkTimes(workTimesResponse.data);
+      setImages(imagesResponse.data.map(imagePath => ({
+        url: `${API_URL}${imagePath}`,
+        path: imagePath
+      })));
 
     } catch (error) {
       console.error('Error fetching restaurant details:', error);
@@ -120,6 +131,16 @@ const RestaurantDetailsPage = () => {
   const handleWorkTimesUpdated = async () => {
     const response = await ApiService.getRestaurantWorkTimes(restaurantId);
     setWorkTimes(response.data);
+    const restaurantResponse = await ApiService.getRestaurantById(restaurantId);
+    setRestaurant(restaurantResponse.data);
+  };
+
+  const handleImagesUpdated = async () => {
+    const response = await ApiService.getRestaurantImages(restaurantId);
+    setImages(response.data.map(imagePath => ({
+      url: `${API_URL}${imagePath}`,
+      path: imagePath
+    })));
     const restaurantResponse = await ApiService.getRestaurantById(restaurantId);
     setRestaurant(restaurantResponse.data);
   };
@@ -186,6 +207,17 @@ const RestaurantDetailsPage = () => {
       console.error('Error deleting work time:', error);
     } finally {
       setWorkTimeToDelete(null);
+    }
+  };
+
+  const handleConfirmDeleteImage = async (imageId) => {
+    try {
+      await ApiService.deleteRestaurantImage(restaurantId, imageId);
+      handleImagesUpdated();
+    } catch (error) {
+      console.error('Error deleting image:', error);
+    } finally {
+      setImageToDelete(null);
     }
   };
 
@@ -338,6 +370,22 @@ const RestaurantDetailsPage = () => {
           onCancel={() => setWorkTimeToDelete(null)}
         />
       )}
+
+      {isManageImagesModalOpen && (
+        <ManageRestaurantImagesModal
+          restaurant={{ id: restaurantId, images }}
+          onClose={() => setIsManageImagesModalOpen(false)}
+          onImagesUpdated={handleImagesUpdated}
+        />
+      )}
+
+      {imageToDelete && (
+        <ConfirmDeleteImageModal
+          image={imageToDelete}
+          onConfirm={handleConfirmDeleteImage}
+          onCancel={() => setImageToDelete(null)}
+        />
+      )}
       
       {isAddDishModalOpen && (
         <AddDishModal
@@ -417,7 +465,20 @@ const RestaurantDetailsPage = () => {
           <h3>Currency Types</h3>
           <ul>{currencyTypes.map(c => <li key={c.id}>{c.name} ({c.symbol})</li>)}</ul>
         </div>
+      </div>
 
+      <div className="detail-section">
+        <div className="section-header">
+          <h3>Images</h3>
+          <button className="btn-manage" onClick={() => setIsManageImagesModalOpen(true)}>Manage Images</button>
+        </div>
+        <div className="image-list">
+          {images.map(image => (
+            <div key={image.url} className="image-item">
+              <img src={image.url} alt={`Restaurant ${restaurant.name}`} />
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="detail-section">
