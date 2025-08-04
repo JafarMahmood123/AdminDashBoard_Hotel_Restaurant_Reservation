@@ -91,23 +91,23 @@ class ApiService {
   }
 
   getLocationId(countryId, cityId, locallocationId) {
-    return this.axios.post(`/location/check`, { countryId, cityId, locallocationId });
+    return this.axios.post(`/locations/check`, { countryId, cityId, locallocationId });
   }
 
   getLocationById(id) {
-    return this.axios.get(`/location/${id}`);
+    return this.axios.get(`/locations/${id}`);
   }
   
   getLocalLocationById(id) {
-      return this.axios.get(`/locallocation/${id}`);
+      return this.axios.get(`/locallocations/${id}`);
   }
 
   getLocalLocationsByCity(cityId){
-      return this.axios.get(`/locallocation/city/${cityId}`);
+      return this.axios.get(`/locallocations/city/${cityId}`);
   }
 
   addLocalLocation(localLocationData){
-      return this.axios.post(`/locallocation`, localLocationData);
+      return this.axios.post(`/locallocations`, localLocationData);
   }
 
   // Restaurant Management
@@ -166,6 +166,9 @@ class ApiService {
   addCuisineToRestaurant(restaurantId, cuisineId) {
     return this.axios.post(`/restaurants/${restaurantId}/cuisines/${cuisineId}`);
   }
+  addCuisine(cuisineData){
+    return this.axios.post(`/cuisines/`, cuisineData);
+  }
 
   removeCuisineFromRestaurant(restaurantId, cuisineId) {
     return this.axios.delete(`/restaurants/${restaurantId}/cuisines/${cuisineId}`);
@@ -181,6 +184,10 @@ class ApiService {
   
   addFeatureToRestaurant(restaurantId, featureId) {
     return this.axios.post(`/restaurants/${restaurantId}/features/${featureId}`);
+  }
+
+  addFeature(featureData) {
+    return this.axios.post(`/features`, featureData);
   }
 
   removeFeatureFromRestaurant(restaurantId, featureId) {
@@ -199,6 +206,10 @@ class ApiService {
     return this.axios.post(`/restaurants/${restaurantId}/mealtypes/${mealTypeId}`);
   }
 
+  addMealType(mealTypeData) {
+    return this.axios.post(`/mealtypes`, mealTypeData);
+  }
+
   removeMealTypeFromRestaurant(restaurantId, mealTypeId) {
     return this.axios.delete(`/restaurants/${restaurantId}/mealtypes/${mealTypeId}`);
   }
@@ -215,6 +226,10 @@ class ApiService {
     return this.axios.post(`/restaurants/${restaurantId}/tags/${tagId}`);
   }
 
+  addTag(tagData) {
+    return this.axios.post(`/tags`, tagData);
+  }
+
   removeTagFromRestaurant(restaurantId, tagId) {
     return this.axios.delete(`/restaurants/${restaurantId}/tags/${tagId}`);
   }
@@ -227,8 +242,8 @@ class ApiService {
     return this.axios.post(`/restaurants/${restaurantId}/worktimes`, workTimeData);
   }
   
-  removeWorkTimeFromRestaurant(restaurantId, workTimeId) {
-    return this.axios.delete(`/restaurants/${restaurantId}/worktimes/${workTimeId}`);
+  removeWorkTimeFromRestaurant(workTimeId) {
+    return this.axios.delete(`/restaurants/worktimes/${workTimeId}`);
   }
 
   getRestaurantCurrencyTypes(restaurantId) {
