@@ -162,10 +162,6 @@ class ApiService {
   getAllCuisines() {
     return this.axios.get('/cuisines');
   }
-
-  addCuisine(cuisineData) {
-    return this.axios.post('/cuisines', cuisineData);
-  }
   
   addCuisineToRestaurant(restaurantId, cuisineId) {
     return this.axios.post(`/restaurants/${restaurantId}/cuisines/${cuisineId}`);
@@ -183,10 +179,6 @@ class ApiService {
     return this.axios.get('/features');
   }
   
-  addFeature(featureData) {
-    return this.axios.post('/features', featureData);
-  }
-  
   addFeatureToRestaurant(restaurantId, featureId) {
     return this.axios.post(`/restaurants/${restaurantId}/features/${featureId}`);
   }
@@ -198,15 +190,11 @@ class ApiService {
   getRestaurantMealTypes(restaurantId) {
     return this.axios.get(`/restaurants/${restaurantId}/mealtypes`);
   }
-
+  
   getAllMealTypes() {
     return this.axios.get('/mealtypes');
   }
-
-  addMealType(mealTypeData) {
-    return this.axios.post('/mealtypes', mealTypeData);
-  }
-
+  
   addMealTypeToRestaurant(restaurantId, mealTypeId) {
     return this.axios.post(`/restaurants/${restaurantId}/mealtypes/${mealTypeId}`);
   }
@@ -223,10 +211,6 @@ class ApiService {
     return this.axios.get('/tags');
   }
 
-  addTag(tagData) {
-    return this.axios.post('/tags', tagData);
-  }
-
   addTagToRestaurant(restaurantId, tagId) {
     return this.axios.post(`/restaurants/${restaurantId}/tags/${tagId}`);
   }
@@ -239,16 +223,8 @@ class ApiService {
     return this.axios.get(`/restaurants/${restaurantId}/worktimes`);
   }
   
-  addWorkTime(workTimeData) {
-    return this.axios.post('/WorkTimes', workTimeData);
-  }
-  
-  addWorkTimeToRestaurant(restaurantId, workTimeId) {
-    console.log('***************************************');
-    console.log(restaurantId);
-    console.log('***************************************');
-    console.log(workTimeId);
-    return this.axios.post(`/restaurants/${restaurantId}/worktimes/${workTimeId}`);
+  addWorkTimeToRestaurant(restaurantId, workTimeData) {
+    return this.axios.post(`/restaurants/${restaurantId}/worktimes`, workTimeData);
   }
   
   removeWorkTimeFromRestaurant(restaurantId, workTimeId) {

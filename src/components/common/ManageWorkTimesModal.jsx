@@ -23,17 +23,13 @@ const ManageWorkTimesModal = ({ restaurant, onClose, onWorkTimesUpdated }) => {
       return;
     }
     try {
-      // Step 1: Create the new work time entry with formatted time and string for the day
       const workTimePayload = {
         day: formData.dayOfWeek,
         openHour: `${formData.openingTime}:00`,
         closeHour: `${formData.closingTime}:00`,
       };
-      const workTimeResponse = await ApiService.addWorkTime(workTimePayload);
-      const newWorkTimeId = workTimeResponse.data.id;
-
-      // Step 2: Associate the new work time with the restaurant
-      await ApiService.addWorkTimeToRestaurant(restaurant.id, newWorkTimeId);
+      
+      await ApiService.addWorkTimeToRestaurant(restaurant.id, workTimePayload);
       
       onWorkTimesUpdated();
       setFormData({ dayOfWeek: 'Monday', openingTime: '', closingTime: '' });
@@ -70,14 +66,14 @@ const ManageWorkTimesModal = ({ restaurant, onClose, onWorkTimesUpdated }) => {
           <label>Closing Time</label>
           <input type="time" name="closingTime" value={formData.closingTime} onChange={handleChange} required />
         </div>
-        <button className="btn-confirm-add" onClick={handleAddWorkTime}>Add Work Time</button>
+        <button className="btn-confirm-add" onClick={handleAddWorkTime}>Add & Merge Work Time</button>
         
         <div className="form-group">
           <label>Existing Work Times</label>
           <ul className="worktime-list">
             {restaurant.workTimes.map(workTime => (
               <li key={workTime.id}>
-                <span>{dayNames[workTime.dayOfWeek]}: {workTime.openingTime} - {workTime.closingTime}</span>
+                <span>{workTime.day}: {workTime.openHour} - {workTime.closeHour}</span>
                 <button className="btn-remove" onClick={() => onWorkTimesUpdated(workTime)}>Remove</button>
               </li>
             ))}

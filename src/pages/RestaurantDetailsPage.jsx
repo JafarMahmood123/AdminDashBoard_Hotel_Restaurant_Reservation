@@ -14,10 +14,8 @@ import ManageWorkTimesModal from '../components/common/ManageWorkTimesModal';
 import ConfirmDeleteWorkTimeModal from '../components/common/ConfirmDeleteWorkTimeModal';
 import AddDishModal from '../components/common/AddDishModal';
 import ConfirmDeleteDishModal from '../components/common/ConfirmDeleteDishModal';
-import EditDishModal from '../components/common/EditDishModal'; // Import the new modal
+import EditDishModal from '../components/common/EditDishModal';
 import '../assets/styles/RestaurantDetailsPage.css';
-
-const dayOfWeekMapping = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 const RestaurantDetailsPage = () => {
   const { restaurantId } = useParams();
@@ -407,9 +405,9 @@ const RestaurantDetailsPage = () => {
           <ul>
             {workTimes.map(w => (
               <li key={w.id}>
-                {typeof w.dayOfWeek === 'number' ? dayOfWeekMapping[w.dayOfWeek] : 'Invalid Day'}: 
-                {w.openingTime ? w.openingTime.substring(0, 5) : 'N/A'} - 
-                {w.closingTime ? w.closingTime.substring(0, 5) : 'N/A'}
+                {w.day}: 
+                {w.openHour ? w.openHour.substring(0, 5) : 'N/A'} - 
+                {w.closeHour ? w.closeHour.substring(0, 5) : 'N/A'}
               </li>
             ))}
           </ul>
