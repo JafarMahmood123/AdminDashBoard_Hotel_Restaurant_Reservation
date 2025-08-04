@@ -180,7 +180,7 @@ const RestaurantDetailsPage = () => {
 
   const handleConfirmDeleteWorkTime = async (workTimeId) => {
     try {
-      await ApiService.removeWorkTimeFromRestaurant(restaurantId, workTimeId);
+      await ApiService.removeWorkTimeFromRestaurant(workTimeId);
       handleWorkTimesUpdated();
     } catch (error) {
       console.error('Error deleting work time:', error);
