@@ -62,6 +62,10 @@ class ApiService {
     return this.axios.post('/user/signup', userData);
   }
 
+  addAdmin(adminData) {
+    return this.axios.post('/Admin', adminData);
+  }
+
   updateUser(id, userData) {
     return this.axios.put(`/user/${id}`, userData);
   }
@@ -133,11 +137,11 @@ class ApiService {
   }
   
   getDishImages(restaurantId, dishId) {
-    return this.axios.get(`/restaurants/${restaurantId}/dishes/${dishId}/image`);
+    return this.axios.get(`/restaurants/${restaurantId}/dishes/${dishId}/images`);
   }
 
   addDishImage(restaurantId, dishId, formData) {
-    return this.axios.post(`/restaurants/${restaurantId}/dishes/${dishId}/image`, formData);
+    return this.axios.post(`/restaurants/${restaurantId}/dishes/${dishId}/images`, formData);
   }
 
   getAllDishes() {
@@ -290,6 +294,20 @@ class ApiService {
     return this.axios.delete(`/hotels/${id}`);
   }
   
+  getHotelImages(hotelId) {
+    return this.axios.get(`/hotels/${hotelId}/images`);
+  }
+
+  addHotelImage(hotelId, formData) {
+    return this.axios.post(`/hotels/${hotelId}/images`, formData);
+  }
+
+  deleteHotelImage(imagePath) {
+    return this.axios.delete('/hotels/images', {
+      data: { imageUrl: imagePath }
+    });
+  }
+
   getPropertyTypeById(id) {
       return this.axios.get(`/propertyTypes/${id}`);
   }
@@ -320,6 +338,20 @@ class ApiService {
 
   getRoomsByHotelId(hotelId) {
     return this.axios.get(`/hotels/${hotelId}/rooms`);
+  }
+
+  getRoomImages(roomId) {
+    return this.axios.get(`/rooms/${roomId}/images`);
+  }
+
+  addRoomImage(roomId, formData) {
+    return this.axios.post(`/rooms/${roomId}/images`, formData);
+  }
+
+  deleteRoomImage(imagePath) {
+    return this.axios.delete('/rooms/images', {
+      data: { imageUrl: imagePath }
+    });
   }
 
   getRoomTypeById(id) {

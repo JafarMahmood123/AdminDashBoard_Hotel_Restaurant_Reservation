@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ApiService from '../api/apiService.jsx';
+import ApiService, { API_URL } from '../api/apiService.jsx';
 import Table from '../components/common/Table.jsx';
 import AddHotelModal from '../components/common/AddHotelModal.jsx';
 import EditHotelModal from '../components/common/EditHotelModal.jsx';
 import ConfirmDeleteHotelModal from '../components/common/ConfirmDeleteHotelModal.jsx';
+import ManageHotelImagesModal from '../components/common/ManageHotelImagesModal.jsx';
 
 const HotelManagementPage = () => {
   const [hotels, setHotels] = useState([]);
@@ -13,6 +14,8 @@ const HotelManagementPage = () => {
   const [isEditHotelModalOpen, setIsEditHotelModalOpen] = useState(false);
   const [hotelToEdit, setHotelToEdit] = useState(null);
   const [hotelToDelete, setHotelToDelete] = useState(null);
+  const [isManageImagesModalOpen, setIsManageImagesModalOpen] = useState(false);
+  const [hotelForImages, setHotelForImages] = useState(null);
   const navigate = useNavigate();
 
   const fetchHotelsAndDetails = async () => {
@@ -56,12 +59,23 @@ const HotelManagementPage = () => {
             }
           }
 
+          let imageUrl = '';
+          try {
+            const imageResponse = await ApiService.getHotelImages(hotel.id);
+            if (imageResponse.data && imageResponse.data.length > 0) {
+              imageUrl = `${API_URL}${imageResponse.data[0]}`;
+            }
+          } catch (e) {
+            console.error(`Failed to fetch image for hotel ${hotel.id}`, e);
+          }
+
           return {
             ...hotel,
             description: hotel.description || 'No description available.',
             priceRange: `$${hotel.minPrice} - $${hotel.maxPrice}`,
             propertyType,
             location,
+            imageUrl,
           };
         })
       );
@@ -112,6 +126,10 @@ const HotelManagementPage = () => {
   const handleHotelUpdated = () => {
       fetchHotelsAndDetails();
   }
+
+  const handleImagesUpdated = () => {
+    fetchHotelsAndDetails();
+  };
   
   const handleManageAmenities = (hotel) => {
     navigate(`/hotels/${hotel.id}/amenities`);
@@ -121,8 +139,26 @@ const HotelManagementPage = () => {
     navigate(`/hotels/${hotel.id}/rooms`);
   };
 
+  const handleManageImages = (hotel) => {
+    setHotelForImages(hotel);
+    setIsManageImagesModalOpen(true);
+  };
+
   const columns = [
     { key: 'name', header: 'Name' },
+    {
+      key: 'imageUrl',
+      header: 'Image',
+      render: (hotel) => (
+        hotel.imageUrl ? (
+          <img 
+            src={hotel.imageUrl} 
+            alt={hotel.name} 
+            className="hotel-image"
+          />
+        ) : 'No Image'
+      ),
+    },
     { key: 'description', header: 'Description' },
     { key: 'starRate', header: 'Star Rate' },
     { key: 'numberOfRooms', header: 'Rooms' },
@@ -160,6 +196,13 @@ const HotelManagementPage = () => {
           onCancel={handleCancelDelete}
         />
       )}
+      {isManageImagesModalOpen && (
+        <ManageHotelImagesModal
+          hotel={hotelForImages}
+          onClose={() => setIsManageImagesModalOpen(false)}
+          onImagesUpdated={handleImagesUpdated}
+        />
+      )}
       <Table 
         data={hotels} 
         columns={columns} 
@@ -169,6 +212,7 @@ const HotelManagementPage = () => {
             <button className="btn-delete" onClick={() => handleDelete(hotel)}>Delete</button>
             <button className="btn-manage" onClick={() => handleManageAmenities(hotel)}>Manage Amenities</button>
             <button className="btn-manage" onClick={() => handleManageRooms(hotel)}>Manage Rooms</button>
+            <button className="btn-manage" onClick={() => handleManageImages(hotel)}>Manage Images</button>
           </>
         )}
       />

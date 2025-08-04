@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import ApiService from '../api/apiService';
+import ApiService, { API_URL } from '../api/apiService';
 import Table from '../components/common/Table';
 import RoomDetailsModal from '../components/common/RoomDetailsModal';
 import AddRoomModal from '../components/common/AddRoomModal';
 import EditRoomModal from '../components/common/EditRoomModal';
 import ConfirmDeleteRoomModal from '../components/common/ConfirmDeleteRoomModal';
+import ManageRoomImagesModal from '../components/common/ManageRoomImagesModal';
 import '../assets/styles/RoomsPage.css';
 
 const RoomsPage = () => {
@@ -19,6 +20,8 @@ const RoomsPage = () => {
   const [isEditRoomModalOpen, setIsEditRoomModalOpen] = useState(false);
   const [roomToEdit, setRoomToEdit] = useState(null);
   const [roomToDelete, setRoomToDelete] = useState(null);
+  const [isManageImagesModalOpen, setIsManageImagesModalOpen] = useState(false);
+  const [roomForImages, setRoomForImages] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -28,10 +31,24 @@ const RoomsPage = () => {
         ApiService.getRoomsByHotelId(hotelId)
       ]);
       
-      const roomsData = roomsResponse.data.map((room) => ({
-        ...room,
-        type: room.roomTypeDescription || 'N/A',
-      }));
+      const roomsData = await Promise.all(
+        roomsResponse.data.map(async (room) => {
+          let imageUrl = '';
+          try {
+            const imageResponse = await ApiService.getRoomImages(room.id);
+            if (imageResponse.data && imageResponse.data.length > 0) {
+              imageUrl = `${API_URL}${imageResponse.data[0]}`;
+            }
+          } catch (e) {
+            console.error(`Failed to fetch image for room ${room.roomNumber}`, e);
+          }
+          return {
+            ...room,
+            type: room.roomTypeDescription || 'N/A',
+            imageUrl: imageUrl,
+          };
+        })
+      );
 
       // Sort rooms by room number
       roomsData.sort((a, b) => a.roomNumber - b.roomNumber);
@@ -61,6 +78,10 @@ const RoomsPage = () => {
     fetchData();
   };
 
+  const handleImagesUpdated = () => {
+    fetchData();
+  };
+
   const handleEditClick = (room) => {
     setRoomToEdit(room);
     setIsEditRoomModalOpen(true);
@@ -85,8 +106,26 @@ const RoomsPage = () => {
     setRoomToDelete(null);
   };
 
+  const handleManageImages = (room) => {
+    setRoomForImages(room);
+    setIsManageImagesModalOpen(true);
+  };
+
   const columns = [
     { key: 'roomNumber', header: 'Room Number' },
+    {
+      key: 'imageUrl',
+      header: 'Image',
+      render: (room) => (
+        room.imageUrl ? (
+          <img 
+            src={room.imageUrl} 
+            alt={`Room ${room.roomNumber}`}
+            className="room-image"
+          />
+        ) : 'No Image'
+      ),
+    },
     { key: 'maxOccupancy', header: 'Max Occupancy' },
     { key: 'description', header: 'Description' },
     { key: 'price', header: 'Price' },
@@ -98,6 +137,7 @@ const RoomsPage = () => {
       <button className="btn-edit" onClick={() => handleEditClick(room)}>Edit</button>
       <button className="btn-delete" onClick={() => handleDeleteClick(room)}>Delete</button>
       <button className="btn-manage" onClick={() => handleShowInfo(room)}>Show Full Information</button>
+      <button className="btn-manage" onClick={() => handleManageImages(room)}>Manage Images</button>
     </>
   );
 
@@ -136,6 +176,13 @@ const RoomsPage = () => {
           room={roomToDelete}
           onConfirm={handleConfirmDelete}
           onCancel={handleCancelDelete}
+        />
+      )}
+      {isManageImagesModalOpen && (
+        <ManageRoomImagesModal
+          room={roomForImages}
+          onClose={() => setIsManageImagesModalOpen(false)}
+          onImagesUpdated={handleImagesUpdated}
         />
       )}
       <Table data={rooms} columns={columns} renderActions={renderActions} />

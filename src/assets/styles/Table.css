@@ -86,7 +86,9 @@
 }
 
 .restaurant-image,
-.dish-image {
+.dish-image,
+.hotel-image,
+.room-image {
     width: 100px;
     height: 60px;
     object-fit: cover;

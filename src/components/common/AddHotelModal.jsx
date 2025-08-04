@@ -99,7 +99,6 @@ const AddHotelModal = ({ onClose, onHotelAdded }) => {
         if (showNewLocalLocation && newLocalLocationName.trim() !== '') {
             const response = await ApiService.addLocalLocation({ name: newLocalLocationName, cityId: formData.cityId });
             finalLocalLocationId = response.data.id;
-            console.log(finalLocalLocationId);
         }
         
         if (!finalLocalLocationId) {
