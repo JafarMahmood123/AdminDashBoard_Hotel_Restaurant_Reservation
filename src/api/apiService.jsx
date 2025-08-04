@@ -131,6 +131,14 @@ class ApiService {
   getDishesByRestaurantId(restaurantId) {
     return this.axios.get(`/restaurants/${restaurantId}/dishes`);
   }
+  
+  getDishImages(restaurantId, dishId) {
+    return this.axios.get(`/restaurants/${restaurantId}/dishes/${dishId}/image`);
+  }
+
+  addDishImage(restaurantId, dishId, formData) {
+    return this.axios.post(`/restaurants/${restaurantId}/dishes/${dishId}/image`, formData);
+  }
 
   getAllDishes() {
     return this.axios.get('/dishes');

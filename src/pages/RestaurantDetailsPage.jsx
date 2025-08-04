@@ -17,6 +17,7 @@ import ConfirmDeleteDishModal from '../components/common/ConfirmDeleteDishModal'
 import EditDishModal from '../components/common/EditDishModal';
 import ManageRestaurantImagesModal from '../components/common/ManageRestaurantImagesModal';
 import ConfirmDeleteImageModal from '../components/common/ConfirmDeleteImageModal';
+import ManageDishImageModal from '../components/common/ManageDishImageModal';
 import '../assets/styles/RestaurantDetailsPage.css';
 
 const RestaurantDetailsPage = () => {
@@ -50,6 +51,8 @@ const RestaurantDetailsPage = () => {
   const [isEditDishModalOpen, setIsEditDishModalOpen] = useState(false);
   const [isManageImagesModalOpen, setIsManageImagesModalOpen] = useState(false);
   const [imageToDelete, setImageToDelete] = useState(null);
+  const [isManageDishImageModalOpen, setIsManageDishImageModalOpen] = useState(false);
+  const [dishForImage, setDishForImage] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -76,8 +79,25 @@ const RestaurantDetailsPage = () => {
         ApiService.getRestaurantImages(restaurantId),
       ]);
       
+      const dishesData = await Promise.all(
+        dishesResponse.data.map(async (dish) => {
+          let imageUrl = '';
+          try {
+            const imageResponse = await ApiService.getDishImages(restaurantId, dish.id);
+            if (imageResponse.data && typeof imageResponse.data === 'string') {
+              imageUrl = `${API_URL}${imageResponse.data}`;
+            }
+          } catch (e) {
+            console.error(`Failed to fetch image for dish ${dish.id}`, e);
+          }
+          return { ...dish, pictureUrl: imageUrl };
+        })
+      );
+
+      dishesData.sort((a, b) => a.name.localeCompare(b.name));
+      
       setRestaurant(restaurantResponse.data);
-      setDishes(dishesResponse.data);
+      setDishes(dishesData);
       setCuisines(cuisinesResponse.data);
       setCurrencyTypes(currencyTypesResponse.data);
       setFeatures(featuresResponse.data);
@@ -146,13 +166,11 @@ const RestaurantDetailsPage = () => {
   };
 
   const handleDishAdded = async () => {
-    const dishesResponse = await ApiService.getDishesByRestaurantId(restaurantId);
-    setDishes(dishesResponse.data);
+    fetchData();
   };
 
   const handleDishUpdated = async () => {
-    const dishesResponse = await ApiService.getDishesByRestaurantId(restaurantId);
-    setDishes(dishesResponse.data);
+    fetchData();
   };
 
   const handleConfirmDeleteCuisine = async (cuisineId) => {
@@ -241,8 +259,26 @@ const RestaurantDetailsPage = () => {
     setIsEditDishModalOpen(true);
   };
 
+  const handleManageImageClick = (dish) => {
+    setDishForImage(dish);
+    setIsManageDishImageModalOpen(true);
+  };
+
   const dishColumns = [
     { key: 'name', header: 'Dish Name' },
+    {
+      key: 'pictureUrl',
+      header: 'Image',
+      render: (dish) => (
+        dish.pictureUrl ? (
+          <img 
+            src={dish.pictureUrl} 
+            alt={dish.name} 
+            className="dish-image"
+          />
+        ) : 'No Image'
+      ),
+    },
     { key: 'description', header: 'Description' },
     { key: 'price', header: 'Price' },
   ];
@@ -411,6 +447,15 @@ const RestaurantDetailsPage = () => {
           onDishUpdated={handleDishUpdated}
         />
       )}
+      
+      {isManageDishImageModalOpen && (
+        <ManageDishImageModal
+          restaurantId={restaurantId}
+          dish={dishForImage}
+          onClose={() => setIsManageDishImageModalOpen(false)}
+          onImageUploaded={handleDishUpdated}
+        />
+      )}
 
       <div className="details-grid">
         <div className="detail-section">
@@ -488,6 +533,7 @@ const RestaurantDetailsPage = () => {
           <>
             <button className="btn-edit" onClick={() => handleEditClick(dish)}>Edit</button>
             <button className="btn-delete" onClick={() => setDishToDelete(dish)}>Delete</button>
+            <button className="btn-manage" onClick={() => handleManageImageClick(dish)}>Manage Image</button>
           </>
         )} />
       </div>

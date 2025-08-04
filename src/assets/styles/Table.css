@@ -85,7 +85,8 @@
     transform: scale(1.05);
 }
 
-.restaurant-image {
+.restaurant-image,
+.dish-image {
     width: 100px;
     height: 60px;
     object-fit: cover;
