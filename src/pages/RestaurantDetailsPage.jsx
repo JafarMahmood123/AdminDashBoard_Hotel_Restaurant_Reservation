@@ -18,6 +18,7 @@ import EditDishModal from '../components/common/EditDishModal';
 import ManageRestaurantImagesModal from '../components/common/ManageRestaurantImagesModal';
 import ConfirmDeleteImageModal from '../components/common/ConfirmDeleteImageModal';
 import ManageDishImageModal from '../components/common/ManageDishImageModal';
+import Navbar from '../components/common/Navbar';
 import '../assets/styles/RestaurantDetailsPage.css';
 
 const RestaurantDetailsPage = () => {
@@ -284,260 +285,267 @@ const RestaurantDetailsPage = () => {
   ];
 
   if (loading) {
-    return <div className="page-container"><h2>Loading...</h2></div>;
+    return (
+        <>
+            <Navbar />
+            <div className="page-container"><h2>Loading...</h2></div>
+        </>
+    );
   }
 
   return (
-    <div className="page-container">
-      <button className="btn-back" onClick={() => navigate('/restaurants')}>&larr; Back to Restaurants</button>
-      <h2>Manage {restaurant?.name}</h2>
-      
-      {isManageCuisinesModalOpen && (
-        <ManageCuisinesModal
-          restaurant={{ id: restaurantId, cuisines }}
-          onClose={() => setIsManageCuisinesModalOpen(false)}
-          onCuisinesUpdated={(cuisine) => {
-            if (cuisine) {
-              setCuisineToDelete(cuisine);
-              setIsManageCuisinesModalOpen(false);
-            } else {
-              handleCuisinesUpdated();
-            }
-          }}
-        />
-      )}
-
-      {cuisineToDelete && (
-        <ConfirmDeleteCuisineModal
-          cuisine={cuisineToDelete}
-          onConfirm={handleConfirmDeleteCuisine}
-          onCancel={() => setCuisineToDelete(null)}
-        />
-      )}
-
-      {isManageFeaturesModalOpen && (
-        <ManageFeaturesModal
-          restaurant={{ id: restaurantId, features }}
-          onClose={() => setIsManageFeaturesModalOpen(false)}
-          onFeaturesUpdated={(feature) => {
-            if (feature) {
-              setFeatureToDelete(feature);
-              setIsManageFeaturesModalOpen(false);
-            } else {
-              handleFeaturesUpdated();
-            }
-          }}
-        />
-      )}
-
-      {featureToDelete && (
-        <ConfirmDeleteFeatureModal
-          feature={featureToDelete}
-          onConfirm={handleConfirmDeleteFeature}
-          onCancel={() => setFeatureToDelete(null)}
-        />
-      )}
-
-      {isManageMealTypesModalOpen && (
-        <ManageMealTypesModal
-          restaurant={{ id: restaurantId, mealTypes }}
-          onClose={() => setIsManageMealTypesModalOpen(false)}
-          onMealTypesUpdated={(mealType) => {
-            if (mealType) {
-              setMealTypeToDelete(mealType);
-              setIsManageMealTypesModalOpen(false);
-            } else {
-              handleMealTypesUpdated();
-            }
-          }}
-        />
-      )}
-
-      {mealTypeToDelete && (
-        <ConfirmDeleteMealTypeModal
-          mealType={mealTypeToDelete}
-          onConfirm={handleConfirmDeleteMealType}
-          onCancel={() => setMealTypeToDelete(null)}
-        />
-      )}
-      
-      {isManageTagsModalOpen && (
-        <ManageTagsModal
-          restaurant={{ id: restaurantId, tags }}
-          onClose={() => setIsManageTagsModalOpen(false)}
-          onTagsUpdated={(tag) => {
-            if (tag) {
-              setTagToDelete(tag);
-              setIsManageTagsModalOpen(false);
-            } else {
-              handleTagsUpdated();
-            }
-          }}
-        />
-      )}
-
-      {tagToDelete && (
-        <ConfirmDeleteTagModal
-          tag={tagToDelete}
-          onConfirm={handleConfirmDeleteTag}
-          onCancel={() => setTagToDelete(null)}
-        />
-      )}
-
-      {isManageWorkTimesModalOpen && (
-        <ManageWorkTimesModal
-          restaurant={{ id: restaurantId, workTimes }}
-          onClose={() => setIsManageWorkTimesModalOpen(false)}
-          onWorkTimesUpdated={(workTime) => {
-            if (workTime) {
-              setWorkTimeToDelete(workTime);
-              setIsManageWorkTimesModalOpen(false);
-            } else {
-              handleWorkTimesUpdated();
-            }
-          }}
-        />
-      )}
-
-      {workTimeToDelete && (
-        <ConfirmDeleteWorkTimeModal
-          workTime={workTimeToDelete}
-          onConfirm={handleConfirmDeleteWorkTime}
-          onCancel={() => setWorkTimeToDelete(null)}
-        />
-      )}
-
-      {isManageImagesModalOpen && (
-        <ManageRestaurantImagesModal
-          restaurant={{ id: restaurantId, images }}
-          onClose={() => setIsManageImagesModalOpen(false)}
-          onImagesUpdated={handleImagesUpdated}
-        />
-      )}
-
-      {imageToDelete && (
-        <ConfirmDeleteImageModal
-          image={imageToDelete}
-          onConfirm={handleConfirmDeleteImage}
-          onCancel={() => setImageToDelete(null)}
-        />
-      )}
-      
-      {isAddDishModalOpen && (
-        <AddDishModal
-          restaurantId={restaurantId}
-          onClose={() => setIsAddDishModalOpen(false)}
-          onDishAdded={handleDishAdded}
-        />
-      )}
-
-      {dishToDelete && (
-        <ConfirmDeleteDishModal
-          dish={dishToDelete}
-          onConfirm={handleConfirmDeleteDish}
-          onCancel={handleCancelDeleteDish}
-        />
-      )}
-
-      {isEditDishModalOpen && (
-        <EditDishModal
-          dish={dishToEdit}
-          restaurantId={restaurantId}
-          onClose={() => setIsEditDishModalOpen(false)}
-          onDishUpdated={handleDishUpdated}
-        />
-      )}
-      
-      {isManageDishImageModalOpen && (
-        <ManageDishImageModal
-          restaurantId={restaurantId}
-          dish={dishForImage}
-          onClose={() => setIsManageDishImageModalOpen(false)}
-          onImageUploaded={handleDishUpdated}
-        />
-      )}
-
-      <div className="details-grid">
-        <div className="detail-section">
-          <div className="section-header">
-            <h3>Cuisines</h3>
-            <button className="btn-manage" onClick={() => setIsManageCuisinesModalOpen(true)}>Manage</button>
-          </div>
-          <ul>{cuisines.map(c => <li key={c.id}>{c.name}</li>)}</ul>
-        </div>
+    <>
+      <Navbar />
+      <div className="page-container">
+        <h2>Manage {restaurant?.name}</h2>
         
-        <div className="detail-section">
-          <div className="section-header">
-            <h3>Features</h3>
-            <button className="btn-manage" onClick={() => setIsManageFeaturesModalOpen(true)}>Manage</button>
-          </div>
-          <ul>{features.map(f => <li key={f.id}>{f.name}</li>)}</ul>
-        </div>
+        {isManageCuisinesModalOpen && (
+          <ManageCuisinesModal
+            restaurant={{ id: restaurantId, cuisines }}
+            onClose={() => setIsManageCuisinesModalOpen(false)}
+            onCuisinesUpdated={(cuisine) => {
+              if (cuisine) {
+                setCuisineToDelete(cuisine);
+                setIsManageCuisinesModalOpen(false);
+              } else {
+                handleCuisinesUpdated();
+              }
+            }}
+          />
+        )}
 
-        <div className="detail-section">
-          <div className="section-header">
-            <h3>Meal Types</h3>
-            <button className="btn-manage" onClick={() => setIsManageMealTypesModalOpen(true)}>Manage</button>
-          </div>
-          <ul>{mealTypes.map(m => <li key={m.id}>{m.name}</li>)}</ul>
-        </div>
+        {cuisineToDelete && (
+          <ConfirmDeleteCuisineModal
+            cuisine={cuisineToDelete}
+            onConfirm={handleConfirmDeleteCuisine}
+            onCancel={() => setCuisineToDelete(null)}
+          />
+        )}
 
-        <div className="detail-section">
-          <div className="section-header">
-            <h3>Tags</h3>
-            <button className="btn-manage" onClick={() => setIsManageTagsModalOpen(true)}>Manage</button>
-          </div>
-          <ul>{tags.map(t => <li key={t.id}>{t.name}</li>)}</ul>
-        </div>
+        {isManageFeaturesModalOpen && (
+          <ManageFeaturesModal
+            restaurant={{ id: restaurantId, features }}
+            onClose={() => setIsManageFeaturesModalOpen(false)}
+            onFeaturesUpdated={(feature) => {
+              if (feature) {
+                setFeatureToDelete(feature);
+                setIsManageFeaturesModalOpen(false);
+              } else {
+                handleFeaturesUpdated();
+              }
+            }}
+          />
+        )}
+
+        {featureToDelete && (
+          <ConfirmDeleteFeatureModal
+            feature={featureToDelete}
+            onConfirm={handleConfirmDeleteFeature}
+            onCancel={() => setFeatureToDelete(null)}
+          />
+        )}
+
+        {isManageMealTypesModalOpen && (
+          <ManageMealTypesModal
+            restaurant={{ id: restaurantId, mealTypes }}
+            onClose={() => setIsManageMealTypesModalOpen(false)}
+            onMealTypesUpdated={(mealType) => {
+              if (mealType) {
+                setMealTypeToDelete(mealType);
+                setIsManageMealTypesModalOpen(false);
+              } else {
+                handleMealTypesUpdated();
+              }
+            }}
+          />
+        )}
+
+        {mealTypeToDelete && (
+          <ConfirmDeleteMealTypeModal
+            mealType={mealTypeToDelete}
+            onConfirm={handleConfirmDeleteMealType}
+            onCancel={() => setMealTypeToDelete(null)}
+          />
+        )}
         
-        <div className="detail-section">
-          <div className="section-header">
-            <h3>Work Times</h3>
-            <button className="btn-manage" onClick={() => setIsManageWorkTimesModalOpen(true)}>Manage</button>
-          </div>
-          <ul>
-            {workTimes.map(w => (
-              <li key={w.id}>
-                {w.day}: 
-                {w.openHour ? w.openHour.substring(0, 5) : 'N/A'} - 
-                {w.closeHour ? w.closeHour.substring(0, 5) : 'N/A'}
-              </li>
-            ))}
-          </ul>
-        </div>
+        {isManageTagsModalOpen && (
+          <ManageTagsModal
+            restaurant={{ id: restaurantId, tags }}
+            onClose={() => setIsManageTagsModalOpen(false)}
+            onTagsUpdated={(tag) => {
+              if (tag) {
+                setTagToDelete(tag);
+                setIsManageTagsModalOpen(false);
+              } else {
+                handleTagsUpdated();
+              }
+            }}
+          />
+        )}
 
-        <div className="detail-section">
-          <h3>Currency Types</h3>
-          <ul>{currencyTypes.map(c => <li key={c.id}>{c.name} ({c.symbol})</li>)}</ul>
-        </div>
-      </div>
+        {tagToDelete && (
+          <ConfirmDeleteTagModal
+            tag={tagToDelete}
+            onConfirm={handleConfirmDeleteTag}
+            onCancel={() => setTagToDelete(null)}
+          />
+        )}
 
-      <div className="detail-section">
-        <div className="section-header">
-          <h3>Images</h3>
-          <button className="btn-manage" onClick={() => setIsManageImagesModalOpen(true)}>Manage Images</button>
-        </div>
-        <div className="image-list">
-          {images.map(image => (
-            <div key={image.url} className="image-item">
-              <img src={image.url} alt={`Restaurant ${restaurant.name}`} />
+        {isManageWorkTimesModalOpen && (
+          <ManageWorkTimesModal
+            restaurant={{ id: restaurantId, workTimes }}
+            onClose={() => setIsManageWorkTimesModalOpen(false)}
+            onWorkTimesUpdated={(workTime) => {
+              if (workTime) {
+                setWorkTimeToDelete(workTime);
+                setIsManageWorkTimesModalOpen(false);
+              } else {
+                handleWorkTimesUpdated();
+              }
+            }}
+          />
+        )}
+
+        {workTimeToDelete && (
+          <ConfirmDeleteWorkTimeModal
+            workTime={workTimeToDelete}
+            onConfirm={handleConfirmDeleteWorkTime}
+            onCancel={() => setWorkTimeToDelete(null)}
+          />
+        )}
+
+        {isManageImagesModalOpen && (
+          <ManageRestaurantImagesModal
+            restaurant={{ id: restaurantId, images }}
+            onClose={() => setIsManageImagesModalOpen(false)}
+            onImagesUpdated={handleImagesUpdated}
+          />
+        )}
+
+        {imageToDelete && (
+          <ConfirmDeleteImageModal
+            image={imageToDelete}
+            onConfirm={handleConfirmDeleteImage}
+            onCancel={() => setImageToDelete(null)}
+          />
+        )}
+        
+        {isAddDishModalOpen && (
+          <AddDishModal
+            restaurantId={restaurantId}
+            onClose={() => setIsAddDishModalOpen(false)}
+            onDishAdded={handleDishAdded}
+          />
+        )}
+
+        {dishToDelete && (
+          <ConfirmDeleteDishModal
+            dish={dishToDelete}
+            onConfirm={handleConfirmDeleteDish}
+            onCancel={handleCancelDeleteDish}
+          />
+        )}
+
+        {isEditDishModalOpen && (
+          <EditDishModal
+            dish={dishToEdit}
+            restaurantId={restaurantId}
+            onClose={() => setIsEditDishModalOpen(false)}
+            onDishUpdated={handleDishUpdated}
+          />
+        )}
+        
+        {isManageDishImageModalOpen && (
+          <ManageDishImageModal
+            restaurantId={restaurantId}
+            dish={dishForImage}
+            onClose={() => setIsManageDishImageModalOpen(false)}
+            onImageUploaded={handleDishUpdated}
+          />
+        )}
+
+        <div className="details-grid">
+          <div className="detail-section">
+            <div className="section-header">
+              <h3>Cuisines</h3>
+              <button className="btn-manage" onClick={() => setIsManageCuisinesModalOpen(true)}>Manage</button>
             </div>
-          ))}
+            <ul>{cuisines.map(c => <li key={c.id}>{c.name}</li>)}</ul>
+          </div>
+          
+          <div className="detail-section">
+            <div className="section-header">
+              <h3>Features</h3>
+              <button className="btn-manage" onClick={() => setIsManageFeaturesModalOpen(true)}>Manage</button>
+            </div>
+            <ul>{features.map(f => <li key={f.id}>{f.name}</li>)}</ul>
+          </div>
+
+          <div className="detail-section">
+            <div className="section-header">
+              <h3>Meal Types</h3>
+              <button className="btn-manage" onClick={() => setIsManageMealTypesModalOpen(true)}>Manage</button>
+            </div>
+            <ul>{mealTypes.map(m => <li key={m.id}>{m.name}</li>)}</ul>
+          </div>
+
+          <div className="detail-section">
+            <div className="section-header">
+              <h3>Tags</h3>
+              <button className="btn-manage" onClick={() => setIsManageTagsModalOpen(true)}>Manage</button>
+            </div>
+            <ul>{tags.map(t => <li key={t.id}>{t.name}</li>)}</ul>
+          </div>
+          
+          <div className="detail-section">
+            <div className="section-header">
+              <h3>Work Times</h3>
+              <button className="btn-manage" onClick={() => setIsManageWorkTimesModalOpen(true)}>Manage</button>
+            </div>
+            <ul>
+              {workTimes.map(w => (
+                <li key={w.id}>
+                  {w.day}: 
+                  {w.openHour ? w.openHour.substring(0, 5) : 'N/A'} - 
+                  {w.closeHour ? w.closeHour.substring(0, 5) : 'N/A'}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="detail-section">
+            <h3>Currency Types</h3>
+            <ul>{currencyTypes.map(c => <li key={c.id}>{c.name} ({c.symbol})</li>)}</ul>
+          </div>
+        </div>
+
+        <div className="detail-section">
+          <div className="section-header">
+            <h3>Images</h3>
+            <button className="btn-manage" onClick={() => setIsManageImagesModalOpen(true)}>Manage Images</button>
+          </div>
+          <div className="image-list">
+            {images.map(image => (
+              <div key={image.url} className="image-item">
+                <img src={image.url} alt={`Restaurant ${restaurant.name}`} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="detail-section">
+          <h3>Dishes</h3>
+          <button className="btn-add" onClick={() => setIsAddDishModalOpen(true)}>Add New Dish</button>
+          <Table data={dishes} columns={dishColumns} renderActions={(dish) => (
+            <>
+              <button className="btn-edit" onClick={() => handleEditClick(dish)}>Edit</button>
+              <button className="btn-delete" onClick={() => setDishToDelete(dish)}>Delete</button>
+              <button className="btn-manage" onClick={() => handleManageImageClick(dish)}>Manage Image</button>
+            </>
+          )} />
         </div>
       </div>
-
-      <div className="detail-section">
-        <h3>Dishes</h3>
-        <button className="btn-add" onClick={() => setIsAddDishModalOpen(true)}>Add New Dish</button>
-        <Table data={dishes} columns={dishColumns} renderActions={(dish) => (
-          <>
-            <button className="btn-edit" onClick={() => handleEditClick(dish)}>Edit</button>
-            <button className="btn-delete" onClick={() => setDishToDelete(dish)}>Delete</button>
-            <button className="btn-manage" onClick={() => handleManageImageClick(dish)}>Manage Image</button>
-          </>
-        )} />
-      </div>
-    </div>
+    </>
   );
 };
 

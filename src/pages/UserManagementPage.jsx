@@ -6,6 +6,7 @@ import AddUserModal from '../components/common/AddUserModal';
 import EditUserModal from '../components/common/EditUserModal';
 import ConfirmDeleteModal from '../components/common/ConfirmDeleteModal';
 import AddAdminModal from '../components/common/AddAdminModal';
+import Navbar from '../components/common/Navbar';
 import '../assets/styles/UserManagementPage.css';
 
 const UserManagementPage = () => {
@@ -18,13 +19,32 @@ const UserManagementPage = () => {
   const [isAddAdminModalOpen, setIsAddAdminModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const fetchUsers = async () => {
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    pageSize: 10,
+    totalCount: 0,
+    hasNextPage: false,
+    hasPreviousPage: false,
+  });
+
+  const fetchUsers = async (page) => {
     try {
       setLoading(true);
-      const response = await ApiService.getUsers();
-      
+      const response = await ApiService.getUsers(page, pagination.pageSize);
+      const { items, ...paginationData } = response.data;
+
+      setPagination({
+        currentPage: paginationData.page,
+        totalPages: paginationData.totalPages,
+        pageSize: paginationData.pageSize,
+        totalCount: paginationData.totalCount,
+        hasNextPage: paginationData.hasNextPage,
+        hasPreviousPage: paginationData.hasPreviousPage,
+      });
+
       const detailedUsers = await Promise.all(
-        response.data.map(async (user) => {
+        items.map(async (user) => {
           let location = 'N/A';
           if (user.locationId) {
             try {
@@ -56,7 +76,6 @@ const UserManagementPage = () => {
         })
       );
 
-      // Sort users by first name
       const sortedUsers = detailedUsers.sort((a, b) => 
         (a.firstName || '').localeCompare(b.firstName || '')
       );
@@ -69,19 +88,19 @@ const UserManagementPage = () => {
   };
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    fetchUsers(pagination.currentPage);
+  }, [pagination.currentPage]);
 
   const handleUserAdded = () => {
-    fetchUsers();
+    fetchUsers(pagination.currentPage);
   };
 
   const handleUserUpdated = () => {
-    fetchUsers();
+    fetchUsers(pagination.currentPage);
   };
 
   const handleAdminAdded = () => {
-    fetchUsers();
+    fetchUsers(pagination.currentPage);
   };
 
   const handleEdit = (user) => {
@@ -96,7 +115,7 @@ const UserManagementPage = () => {
   const handleConfirmDelete = async (userId) => {
     try {
       await ApiService.deleteUser(userId);
-      fetchUsers();
+      fetchUsers(pagination.currentPage);
     } catch (error) {
       console.error('Error deleting user:', error);
     } finally {
@@ -106,6 +125,18 @@ const UserManagementPage = () => {
 
   const handleCancelDelete = () => {
     setUserToDelete(null);
+  };
+
+  const handleNextPage = () => {
+    if (pagination.hasNextPage) {
+      setPagination(prev => ({ ...prev, currentPage: prev.currentPage + 1 }));
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (pagination.hasPreviousPage) {
+      setPagination(prev => ({ ...prev, currentPage: prev.currentPage - 1 }));
+    }
   };
 
   const columns = [
@@ -119,54 +150,72 @@ const UserManagementPage = () => {
   ];
 
   if (loading) {
-    return <div className="page-container"><h2>Loading...</h2></div>;
+    return (
+        <>
+            <Navbar />
+            <div className="page-container"><h2>Loading...</h2></div>
+        </>
+    );
   }
 
   return (
-    <div className="page-container">
-      <button className="btn-back" onClick={() => navigate('/')}>&larr; Back to Home</button>
-      <h2>User Management</h2>
-      <div className="action-buttons">
-        <button className="btn-add" onClick={() => setIsAddUserModalOpen(true)}>Add New User</button>
-        <button className="btn-add-admin" onClick={() => setIsAddAdminModalOpen(true)}>Add New Admin</button>
-      </div>
-      {isAddUserModalOpen && (
-        <AddUserModal
-          onClose={() => setIsAddUserModalOpen(false)}
-          onUserAdded={handleUserAdded}
-        />
-      )}
-      {isAddAdminModalOpen && (
-        <AddAdminModal
-          onClose={() => setIsAddAdminModalOpen(false)}
-          onAdminAdded={handleAdminAdded}
-        />
-      )}
-      {isEditUserModalOpen && (
-        <EditUserModal
-          user={userToEdit}
-          onClose={() => setIsEditUserModalOpen(false)}
-          onUserUpdated={handleUserUpdated}
-        />
-      )}
-      {userToDelete && (
-        <ConfirmDeleteModal
-          user={userToDelete}
-          onConfirm={handleConfirmDelete}
-          onCancel={handleCancelDelete}
-        />
-      )}
-      <Table 
-        data={users} 
-        columns={columns} 
-        renderActions={(user) => (
-          <>
-            <button className="btn-edit" onClick={() => handleEdit(user)}>Edit</button>
-            <button className="btn-delete" onClick={() => handleDelete(user)}>Delete</button>
-          </>
+    <>
+      <Navbar />
+      <div className="page-container">
+        <h2>User Management</h2>
+        <div className="action-buttons">
+          <button className="btn-add" onClick={() => setIsAddUserModalOpen(true)}>Add New User</button>
+          <button className="btn-add-admin" onClick={() => setIsAddAdminModalOpen(true)}>Add New Admin</button>
+        </div>
+        {isAddUserModalOpen && (
+          <AddUserModal
+            onClose={() => setIsAddUserModalOpen(false)}
+            onUserAdded={handleUserAdded}
+          />
         )}
-      />
-    </div>
+        {isAddAdminModalOpen && (
+          <AddAdminModal
+            onClose={() => setIsAddAdminModalOpen(false)}
+            onAdminAdded={handleAdminAdded}
+          />
+        )}
+        {isEditUserModalOpen && (
+          <EditUserModal
+            user={userToEdit}
+            onClose={() => setIsEditUserModalOpen(false)}
+            onUserUpdated={handleUserUpdated}
+          />
+        )}
+        {userToDelete && (
+          <ConfirmDeleteModal
+            user={userToDelete}
+            onConfirm={handleConfirmDelete}
+            onCancel={handleCancelDelete}
+          />
+        )}
+        <Table 
+          data={users} 
+          columns={columns} 
+          renderActions={(user) => (
+            <>
+              <button className="btn-edit" onClick={() => handleEdit(user)}>Edit</button>
+              <button className="btn-delete" onClick={() => handleDelete(user)}>Delete</button>
+            </>
+          )}
+        />
+        <div className="pagination-controls" style={{ textAlign: 'center', marginTop: '1rem' }}>
+          <button onClick={handlePreviousPage} disabled={!pagination.hasPreviousPage}>
+            Previous
+          </button>
+          <span style={{ margin: '0 1rem' }}>
+            Page {pagination.currentPage} of {pagination.totalPages}
+          </span>
+          <button onClick={handleNextPage} disabled={!pagination.hasNextPage}>
+            Next
+          </button>
+        </div>
+      </div>
+    </>
   );
 };
 

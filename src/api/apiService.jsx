@@ -12,24 +12,70 @@ class ApiService {
     this.axios.interceptors.request.use((config) => {
       const token = localStorage.getItem('token');
       if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+        try {
+          const decodedToken = jwtDecode(token);
+          if (decodedToken.exp * 1000 < Date.now()) {
+            // Token is expired
+            this.logout();
+            window.location.href = '/login';
+            return Promise.reject(new Error('Token expired'));
+          }
+          config.headers.Authorization = `Bearer ${token}`;
+        } catch (error) {
+          // Token is invalid or malformed
+          console.error('Invalid token:', error);
+          this.logout();
+          window.location.href = '/login';
+          return Promise.reject(new Error('Invalid token'));
+        }
       }
       return config;
     });
+
+    this.axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response && error.response.status === 401) {
+          // Unauthorized access, likely due to invalid/expired token on the server side
+          this.logout();
+          window.location.href = '/login';
+        }
+        return Promise.reject(error);
+      }
+    );
   }
 
-  // ... (login, logout, getCurrentUser methods remain the same)
   async login(credentials) {
-    const response = await this.axios.post('/auth/login', credentials);
-    const { token } = response.data;
+    const response = await this.axios.post('/user/login', credentials);
+    const token = response.data;
 
-    if (token) {
-      const decodedToken = jwtDecode(token);
-      if (decodedToken.role === 'admin') {
-        localStorage.setItem('token', token);
-        return response;
-      } else {
-        throw new Error('Access Denied: User is not an administrator.');
+    if (token && typeof token === 'string') {
+      try {
+        const decodedToken = jwtDecode(token);
+        // MODIFIED: Use the correct, full key for the role claim from the token
+        const roleClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+        const userRole = decodedToken[roleClaim];
+
+        let isAdmin = false;
+        if (userRole) {
+            if (Array.isArray(userRole)) {
+                // If the role is an array, check if 'admin' is one of the roles
+                isAdmin = userRole.map(r => r.toLowerCase()).includes('admin');
+            } else if (typeof userRole === 'string') {
+                // If the role is a single string, compare it
+                isAdmin = userRole.toLowerCase() === 'admin';
+            }
+        }
+        
+        if (isAdmin) {
+          localStorage.setItem('token', token);
+          return response;
+        } else {
+          throw new Error('Access Denied: User is not an administrator.');
+        }
+      } catch (error) {
+        // This will now correctly catch our custom "Access Denied" error
+        throw error;
       }
     } else {
       throw new Error('Login failed: No token received.');
@@ -38,24 +84,35 @@ class ApiService {
 
   logout() {
     localStorage.removeItem('token');
+    window.location.href = '/login';
   }
 
   getCurrentUser() {
     try {
       const token = localStorage.getItem('token');
       if (token) {
-        return jwtDecode(token);
+        const decodedToken = jwtDecode(token);
+        // Check if token is expired
+        if (decodedToken.exp * 1000 < Date.now()) {
+          this.logout();
+          return null;
+        }
+        return decodedToken;
       }
       return null;
     } catch (error) {
       console.error('Error decoding token:', error);
+      // If token is malformed, remove it
+      this.logout();
       return null;
     }
   }
 
   // User Management
-  getUsers() {
-    return this.axios.get('/user');
+  getUsers(page = 1, pageSize = 10) {
+    return this.axios.get('/user', {
+      params: { page, pageSize }
+    });
   }
 
   addUser(userData) {
@@ -112,8 +169,10 @@ class ApiService {
   }
 
   // Restaurant Management
-  getRestaurants() {
-    return this.axios.get('/restaurants');
+  getRestaurants(page = 1, pageSize = 10) {
+    return this.axios.get('/restaurants', {
+      params: { page, pageSize }
+    });
   }
 
   getRestaurantById(id) {
@@ -137,11 +196,11 @@ class ApiService {
   }
   
   getDishImages(restaurantId, dishId) {
-    return this.axios.get(`/restaurants/${restaurantId}/dishes/${dishId}/images`);
+    return this.axios.get(`/restaurants/${restaurantId}/dishes/${dishId}/image`);
   }
 
   addDishImage(restaurantId, dishId, formData) {
-    return this.axios.post(`/restaurants/${restaurantId}/dishes/${dishId}/images`, formData);
+    return this.axios.post(`/restaurants/${restaurantId}/dishes/${dishId}/image`, formData);
   }
 
   getAllDishes() {
@@ -260,7 +319,7 @@ class ApiService {
   }
 
   addRestaurantImage(restaurantId, formData) {
-    return this.axios.post(`/restaurants/${restaurantId}/images`, formData);
+    return this.axios.post(`/restaurants/${restaurantId}/image`, formData);
   }
 
   deleteRestaurantImage(imagePath) {
@@ -274,8 +333,10 @@ class ApiService {
   }
 
   // Hotel Management
-  getHotels() {
-    return this.axios.get('/hotels');
+getHotels(page = 1, pageSize = 10) {
+    return this.axios.get('/hotels', { 
+      params: { page, pageSize } 
+    });
   }
 
   getHotelById(id) {
@@ -303,7 +364,7 @@ class ApiService {
   }
 
   deleteHotelImage(imagePath) {
-    return this.axios.delete('/hotels/images', {
+    return this.axios.delete('/hotels/image', {
       data: { imageUrl: imagePath }
     });
   }

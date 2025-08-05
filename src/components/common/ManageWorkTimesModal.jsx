@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import ApiService from '../../api/apiService';
 import '../../assets/styles/ManageWorkTimesModal.css';
 
-const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
 const ManageWorkTimesModal = ({ restaurant, onClose, onWorkTimesUpdated }) => {
   const [formData, setFormData] = useState({
     dayOfWeek: 'Monday',
@@ -39,6 +37,14 @@ const ManageWorkTimesModal = ({ restaurant, onClose, onWorkTimesUpdated }) => {
     }
   };
 
+  // Define the correct order of days
+  const dayOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+  // Create a sorted version of the workTimes array from props
+  const sortedWorkTimes = [...restaurant.workTimes].sort((a, b) => {
+      return dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day);
+  });
+
   return (
     <div className="modal-overlay">
       <div className="modal-content">
@@ -71,7 +77,8 @@ const ManageWorkTimesModal = ({ restaurant, onClose, onWorkTimesUpdated }) => {
         <div className="form-group">
           <label>Existing Work Times</label>
           <ul className="worktime-list">
-            {restaurant.workTimes.map(workTime => (
+            {/* Use the new sortedWorkTimes array for mapping */}
+            {sortedWorkTimes.map(workTime => (
               <li key={workTime.id}>
                 <span>{workTime.day}: {workTime.openHour} - {workTime.closeHour}</span>
                 <button className="btn-remove" onClick={() => onWorkTimesUpdated(workTime)}>Remove</button>

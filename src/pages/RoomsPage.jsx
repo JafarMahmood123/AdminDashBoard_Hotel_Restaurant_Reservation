@@ -7,6 +7,7 @@ import AddRoomModal from '../components/common/AddRoomModal';
 import EditRoomModal from '../components/common/EditRoomModal';
 import ConfirmDeleteRoomModal from '../components/common/ConfirmDeleteRoomModal';
 import ManageRoomImagesModal from '../components/common/ManageRoomImagesModal';
+import Navbar from '../components/common/Navbar';
 import '../assets/styles/RoomsPage.css';
 
 const RoomsPage = () => {
@@ -50,7 +51,6 @@ const RoomsPage = () => {
         })
       );
 
-      // Sort rooms by room number
       roomsData.sort((a, b) => a.roomNumber - b.roomNumber);
 
       setHotelName(hotelResponse.data.name);
@@ -142,51 +142,58 @@ const RoomsPage = () => {
   );
 
   if (loading) {
-    return <div className="page-container"><h2>Loading...</h2></div>;
+    return (
+        <>
+            <Navbar />
+            <div className="page-container"><h2>Loading...</h2></div>
+        </>
+    );
   }
 
   return (
-    <div className="page-container">
-      <button className="btn-back" onClick={() => navigate('/hotels')}>&larr; Back to Hotels</button>
-      <h2>Manage Rooms for {hotelName}</h2>
-      <button className="btn-add" onClick={() => setIsAddRoomModalOpen(true)}>Add New Room</button>
-      {isAddRoomModalOpen && (
-        <AddRoomModal
-          hotelId={hotelId}
-          onClose={() => setIsAddRoomModalOpen(false)}
-          onRoomAdded={handleRoomAdded}
-        />
-      )}
-      {isEditRoomModalOpen && (
-        <EditRoomModal
-          room={roomToEdit}
-          hotelId={hotelId}
-          onClose={() => setIsEditRoomModalOpen(false)}
-          onRoomUpdated={handleRoomUpdated}
-        />
-      )}
-      {selectedRoom && (
-        <RoomDetailsModal
-          room={selectedRoom}
-          onClose={() => setSelectedRoom(null)}
-        />
-      )}
-      {roomToDelete && (
-        <ConfirmDeleteRoomModal
-          room={roomToDelete}
-          onConfirm={handleConfirmDelete}
-          onCancel={handleCancelDelete}
-        />
-      )}
-      {isManageImagesModalOpen && (
-        <ManageRoomImagesModal
-          room={roomForImages}
-          onClose={() => setIsManageImagesModalOpen(false)}
-          onImagesUpdated={handleImagesUpdated}
-        />
-      )}
-      <Table data={rooms} columns={columns} renderActions={renderActions} />
-    </div>
+    <>
+      <Navbar />
+      <div className="page-container">
+        <h2>Manage Rooms for {hotelName}</h2>
+        <button className="btn-add" onClick={() => setIsAddRoomModalOpen(true)}>Add New Room</button>
+        {isAddRoomModalOpen && (
+          <AddRoomModal
+            hotelId={hotelId}
+            onClose={() => setIsAddRoomModalOpen(false)}
+            onRoomAdded={handleRoomAdded}
+          />
+        )}
+        {isEditRoomModalOpen && (
+          <EditRoomModal
+            room={roomToEdit}
+            hotelId={hotelId}
+            onClose={() => setIsEditRoomModalOpen(false)}
+            onRoomUpdated={handleRoomUpdated}
+          />
+        )}
+        {selectedRoom && (
+          <RoomDetailsModal
+            room={selectedRoom}
+            onClose={() => setSelectedRoom(null)}
+          />
+        )}
+        {roomToDelete && (
+          <ConfirmDeleteRoomModal
+            room={roomToDelete}
+            onConfirm={handleConfirmDelete}
+            onCancel={handleCancelDelete}
+          />
+        )}
+        {isManageImagesModalOpen && (
+          <ManageRoomImagesModal
+            room={roomForImages}
+            onClose={() => setIsManageImagesModalOpen(false)}
+            onImagesUpdated={handleImagesUpdated}
+          />
+        )}
+        <Table data={rooms} columns={columns} renderActions={renderActions} />
+      </div>
+    </>
   );
 };
 

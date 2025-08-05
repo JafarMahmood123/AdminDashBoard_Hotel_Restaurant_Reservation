@@ -5,6 +5,7 @@ import Table from '../components/common/Table';
 import AddHotelAmenityModal from '../components/common/AddHotelAmenityModal';
 import EditHotelAmenityModal from '../components/common/EditHotelAmenityModal';
 import ConfirmDeleteAmenityModal from '../components/common/ConfirmDeleteAmenityModal';
+import Navbar from '../components/common/Navbar'; // Import Navbar
 import '../assets/styles/AmenitiesPage.css';
 
 const AmenitiesPage = () => {
@@ -83,38 +84,45 @@ const AmenitiesPage = () => {
   );
 
   if (loading) {
-    return <div className="page-container"><h2>Loading...</h2></div>;
+    return (
+      <>
+        <Navbar />
+        <div className="page-container"><h2>Loading...</h2></div>
+      </>
+    );
   }
 
   return (
-    <div className="page-container">
-      <button className="btn-back" onClick={() => navigate('/hotels')}>&larr; Back to Hotels</button>
-      <h2>Manage Amenities for {hotelName}</h2>
-      <button className="btn-add" onClick={() => setIsAddAmenityModalOpen(true)}>Add New Amenity</button>
-      {isAddAmenityModalOpen && (
-        <AddHotelAmenityModal
-          hotelId={hotelId}
-          onClose={() => setIsAddAmenityModalOpen(false)}
-          onAmenityAdded={handleAmenityAdded}
-        />
-      )}
-      {isEditAmenityModalOpen && (
-        <EditHotelAmenityModal
-          amenity={amenityToEdit}
-          hotelId={hotelId}
-          onClose={() => setIsEditAmenityModalOpen(false)}
-          onAmenityUpdated={handleAmenityUpdated}
-        />
-      )}
-      {amenityToDelete && (
-        <ConfirmDeleteAmenityModal
-          amenity={amenityToDelete}
-          onConfirm={handleConfirmDelete}
-          onCancel={handleCancelDelete}
-        />
-      )}
-      <Table data={amenities} columns={columns} renderActions={renderActions} />
-    </div>
+    <>
+      <Navbar />
+      <div className="page-container">
+        <h2>Manage Amenities for {hotelName}</h2>
+        <button className="btn-add" onClick={() => setIsAddAmenityModalOpen(true)}>Add New Amenity</button>
+        {isAddAmenityModalOpen && (
+          <AddHotelAmenityModal
+            hotelId={hotelId}
+            onClose={() => setIsAddAmenityModalOpen(false)}
+            onAmenityAdded={handleAmenityAdded}
+          />
+        )}
+        {isEditAmenityModalOpen && (
+          <EditHotelAmenityModal
+            amenity={amenityToEdit}
+            hotelId={hotelId}
+            onClose={() => setIsEditAmenityModalOpen(false)}
+            onAmenityUpdated={handleAmenityUpdated}
+          />
+        )}
+        {amenityToDelete && (
+          <ConfirmDeleteAmenityModal
+            amenity={amenityToDelete}
+            onConfirm={handleConfirmDelete}
+            onCancel={handleCancelDelete}
+          />
+        )}
+        <Table data={amenities} columns={columns} renderActions={renderActions} />
+      </div>
+    </>
   );
 };
 
