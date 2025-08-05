@@ -121,6 +121,14 @@ const RestaurantDetailsPage = () => {
     fetchData();
   }, [restaurantId]);
 
+  // Define the correct order of days
+  const dayOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+  // Create a sorted version of the workTimes array
+  const sortedWorkTimes = [...workTimes].sort((a, b) => {
+      return dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day);
+  });
+
   const handleCuisinesUpdated = async () => {
     const response = await ApiService.getRestaurantCuisines(restaurantId);
     setCuisines(response.data);
@@ -503,7 +511,7 @@ const RestaurantDetailsPage = () => {
               <button className="btn-manage" onClick={() => setIsManageWorkTimesModalOpen(true)}>Manage</button>
             </div>
             <ul>
-              {workTimes.map(w => (
+              {sortedWorkTimes.map(w => (
                 <li key={w.id}>
                   {w.day}: 
                   {w.openHour ? w.openHour.substring(0, 5) : 'N/A'} - 
