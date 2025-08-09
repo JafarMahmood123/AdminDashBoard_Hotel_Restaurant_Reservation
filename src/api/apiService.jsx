@@ -319,7 +319,7 @@ class ApiService {
   }
 
   addRestaurantImage(restaurantId, formData) {
-    return this.axios.post(`/restaurants/${restaurantId}/image`, formData);
+    return this.axios.post(`/restaurants/${restaurantId}/images`, formData);
   }
 
   deleteRestaurantImage(imagePath) {
@@ -428,7 +428,7 @@ getHotels(page = 1, pageSize = 10) {
   }
 
   getRoomTypes() {
-    return this.axios.get('/roomtype');
+    return this.axios.get('/roomtypes');
   }
 
   deleteRoomFromHotel(hotelId, roomId) {
@@ -440,7 +440,7 @@ getHotels(page = 1, pageSize = 10) {
   }
 
   addRoomType(description) {
-    return this.axios.post(`/roomtype/${encodeURIComponent(description)}`);
+    return this.axios.post(`/roomtypes/${encodeURIComponent(description)}`);
   }
 }
 
